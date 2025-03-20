@@ -1,6 +1,14 @@
 const enquiryBtnSing = document.getElementById("enquiry-btn-single");
 const enquiryBtnMulti = document.getElementById("enquiry-btn-multiple");
 
+// Filter toggle functionality for mobile
+const filterToggle = document.getElementById('filter-toggle');
+const filterSidebar = document.getElementById('filter-sidebar');
+const filterOverlay = document.getElementById('filter-overlay');
+const closeFilter = document.getElementById('close-filter');
+
+
+
 if (enquiryBtnSing) {
     enquiryBtnSing.addEventListener("click", () => {
         const id = enquiryBtnSing.getAttribute("data-value");
@@ -14,8 +22,8 @@ if (enquiryBtnSing) {
 if (enquiryBtnMulti) {
     enquiryBtnMulti.addEventListener("click", () => {
         const userInput = prompt('Please enter your number & proceed:');
-        if (userInput) { 
-            window.location.href = `/products/enquiry/multiple?query=` + encodeURIComponent(userInput); 
+        if (userInput) {
+            window.location.href = `/products/enquiry/multiple?query=` + encodeURIComponent(userInput);
         }
     });
 }
@@ -38,7 +46,7 @@ document.querySelectorAll('.quantity-btn').forEach(button => {
 // --------------------------------------------------------------------------------
 
 const sortType = document.getElementById('sort-type');
-if(sortType) {
+if (sortType) {
     sortType.addEventListener('change', (e) => {
         updateSort(e.target.value);
     });
@@ -50,4 +58,26 @@ function updateSort(value) {
     url.searchParams.set('sortBy', sortBy);
     url.searchParams.set('sortOrder', sortOrder);
     window.location = url.toString();
+}
+
+// -----------------------------------------------------------------------------
+
+if (filterToggle && filterSidebar && filterOverlay) {
+    filterToggle.addEventListener('click', () => {
+        filterSidebar.classList.remove('hidden');
+        filterOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    });
+
+    closeFilter?.addEventListener('click', () => {
+        filterSidebar.classList.add('hidden');
+        filterOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+    });
+
+    filterOverlay.addEventListener('click', () => {
+        filterSidebar.classList.add('hidden');
+        filterOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+    });
 }

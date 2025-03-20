@@ -26,7 +26,7 @@ const shop = async (req, res) => {
             maxPrice = ''
         } = req.query;
         
-        const DEFAULT_LIMIT = 27;
+        const DEFAULT_LIMIT = 10;
         const pageNum = parseInt(page, 10);
         
         // Sorting order

@@ -1,140 +1,219 @@
 <%- include('./partials/header') %>
 
-
     <!-- banner -->
-    <div class="bg-cover bg-no-repeat bg-center py-20 md:py-36 relative" style="background-image: url('images/banner-bg.jpg')">
-        <div class="container">
+    <div class="bg-cover bg-no-repeat bg-center py-28 md:py-40 relative" 
+         style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop')">
+        <div class="container relative z-20">
             <!-- banner content -->
-            <h1 class="md:text-5xl text-4xl text-gray-800 font-medium mb-4">
-                Best Collection For <br class="hidden sm:block">Clothing
-            </h1>
-            <p class="text-base text-gray-600 leading-6 w-[80%] md:w-[60%]">
-                "Discover our exquisite range of clothing that perfectly blends elegance and style."
-            </p>
-            <!-- banner button -->
-            <div class="mt-12 flex flex-wrap gap-3">
-                <a href="/products/shop?category=clothing" class="bg-primary border border-primary text-white mx-2 px-8 py-3 font-medium rounded-md uppercase hover:bg-transparent
-               hover:text-primary transition">
-                    Clothing
-                </a>
+            <div class="max-w-xl">
+                <h1 class="text-5xl md:text-7xl text-white font-bold mb-6 leading-tight">
+                    Elevate Your <br class="hidden sm:block"><span class="text-yellow-400">Style</span>
+                </h1>
+                <p class="text-lg md:text-xl text-white/90 leading-relaxed mb-8 font-light">
+                    Discover our curated collection of premium fashion that defines elegance and sophistication.
+                </p>
+                <!-- banner button -->
+                <div class="flex gap-4">
+                    <a href="/products/shop?category=clothing" 
+                       class="bg-white text-primary px-8 py-4 font-semibold rounded-lg uppercase hover:bg-primary hover:text-white transition duration-300 transform hover:scale-105">
+                        Explore Collection
+                    </a>
+                    <a href="/products/shop?sortBy=createdAt&sortOrder=desc" 
+                       class="border-2 border-white text-white px-8 py-4 font-semibold rounded-lg uppercase hover:bg-white hover:text-primary transition duration-300">
+                        New Arrivals
+                    </a>
+                </div>
             </div>
-            <!-- banner button end -->
-            <!-- banner content end -->
         </div>
     </div>
     <!-- banner end -->
 
-    <!-- features -->
-    <div class="container py-16">
-        <div class="lg:w-10/12 grid md:grid-cols-3 gap-3 lg:gap-6 mx-auto justify-center">
-
-            <!-- single feature -->
-            <div
-                class="border-primary border rounded-sm px-8 lg:px-3 lg:py-6 py-4 flex justify-center items-center gap-5">
-                <img src="images/icons/delivery-van.svg" class="lg:w-12 w-10 h-12 object-contain">
-                <div>
-                    <h4 class="font-medium capitalize text-lg">free shipping</h4>
-                    <p class="text-gray-500 text-xs lg:text-sm">Order over ₹200</p>
-                </div>
-            </div>
-            <!-- single feature end -->
-            <!-- single feature -->
-            <div
-                class="border-primary border rounded-sm px-8 lg:px-3 lg:py-6 py-4 flex justify-center items-center gap-5">
-                <img src="/images/icons/money-back.svg" class="lg:w-12 w-10 h-12 object-contain">
-                <div>
-                    <h4 class="font-medium capitalize text-lg">Money returns</h4>
-                    <p class="text-gray-500 text-xs lg:text-sm">30 Days money return</p>
-                </div>
-            </div>
-            <!-- single feature end -->
-            <!-- single feature -->
-            <div
-                class="border-primary border rounded-sm px-8 lg:px-3 lg:py-6 py-4 flex justify-center items-center gap-5">
-                <img src="/images/icons/service-hours.svg" class="lg:w-12 w-10 h-12 object-contain">
-                <div>
-                    <h4 class="font-medium capitalize text-lg">24/7 Support</h4>
-                    <p class="text-gray-500 text-xs lg:text-sm">Customer support</p>
-                </div>
-            </div>
-            <!-- single feature end -->
-
-        </div>
-    </div>
-    <!-- features end -->
 
     <!-- categories -->
-    <div class="container pb-16">
-        <h2 class="text-2xl md:text-3xl font-medium text-gray-800 uppercase mb-6">shop by category</h2>
-        <div class="grid lg:grid-cols-3 sm:grid-cols-2 gap-3">
+    <div class="container py-16 ">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Trending Categories</h2>
+            <div class="w-20 h-1 bg-primary mx-auto"></div>
+        </div>
+        <div class="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
             <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-1.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white 
-                    font-roboto font-medium tracking-wide transition">
-                    Bedroom
-                </a>
+            <div class="relative group overflow-hidden rounded-xl shadow-lg">
+                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=2080&auto=format&fit=crop" 
+                     alt="Suits" 
+                     class="w-full h-[400px] object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Luxury Suits</h3>
+                        <a href="/products/shop?query=suit" 
+                           class="inline-block bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white hover:text-primary transition">
+                            Explore Collection
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- single category end -->
             <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-5.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white 
-                    font-roboto font-medium tracking-wide transition">
-                    Sofa
-                </a>
+            <div class="relative group overflow-hidden rounded-xl shadow-lg">
+                <img src="https://images.unsplash.com/photo-1583391099995-0e67401a66cc?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Sarees" 
+                     class="w-full h-[400px] object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Designer Sarees</h3>
+                        <a href="/products/shop?query=saree" 
+                           class="inline-block bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white hover:text-primary transition">
+                            View Collection
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- single category end -->
             <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-3.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white 
-                    font-roboto font-medium tracking-wide transition">
-                    Office
-                </a>
+            <div class="relative group overflow-hidden rounded-xl shadow-lg">
+                <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop" 
+                     alt="Formal" 
+                     class="w-full h-[400px] object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Business Attire</h3>
+                        <a href="/products/shop?query=Formal" 
+                           class="inline-block bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white hover:text-primary transition">
+                            Shop Now
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- single category end -->
             <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-4.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white 
-                    font-roboto font-medium tracking-wide transition">
-                    Outdoor
-                </a>
+            <div class="relative group overflow-hidden rounded-xl shadow-lg">
+                <img src="https://images.unsplash.com/photo-1550021055-b060dc295dc5?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Wedding" 
+                     class="w-full h-[400px] object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Wedding Collection</h3>
+                        <a href="/products/shop?query=Wedding" 
+                           class="inline-block bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white hover:text-primary transition">
+                            Discover More
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- single category end -->
             <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-2.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white 
-                    font-roboto font-medium tracking-wide transition">
-                    Mattress
-                </a>
+            <div class="relative group overflow-hidden rounded-xl shadow-lg">
+                <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Cotton" 
+                     class="w-full h-[400px] object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Cotton Collection</h3>
+                        <a href="/products/shop?query=Cotton" 
+                           class="inline-block bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white hover:text-primary transition">
+                            Browse Collection
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- single category end -->
             <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-6.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white 
-                        font-roboto font-medium tracking-wide transition">
-                    Dinings
-                </a>
+            <div class="relative group overflow-hidden rounded-xl shadow-lg">
+                <img src="https://images.unsplash.com/photo-1553484771-047a44eee27f?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Casual" 
+                     class="w-full h-[400px] object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Casual Wear</h3>
+                        <a href="/products/shop?query=Casual" 
+                           class="inline-block bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white hover:text-primary transition">
+                            View All
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- single category end -->
         </div>
     </div>
     <!-- categories end -->
 
-
-
-    <!-- ad section -->
+    <!-- flash sale section -->
     <div class="container pb-16">
-        <a href="#">
-            <!-- <img src="images/offer.jpg" class="w-full"> -->
-        </a>
+        <div class="bg-gradient-to-r from-primary to-secondary rounded-2xl overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center">
+                <!-- sale content -->
+                <div class="w-full md:w-1/2 p-12 text-white">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">Summer Sale</h2>
+                    <p class="text-xl mb-8 text-white/90">Up to 70% off on selected items</p>
+                    <div class="grid grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl text-center">
+                            <span class="text-3xl font-bold block">24</span>
+                            <span class="text-sm">Days</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl text-center">
+                            <span class="text-3xl font-bold block">12</span>
+                            <span class="text-sm">Hours</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl text-center">
+                            <span class="text-3xl font-bold block">35</span>
+                            <span class="text-sm">Minutes</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl text-center">
+                            <span class="text-3xl font-bold block">59</span>
+                            <span class="text-sm">Seconds</span>
+                        </div>
+                    </div>
+                    <a href="/products/shop" 
+                       class="inline-block bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-primary hover:text-white transition duration-300 transform hover:scale-105">
+                        Shop the Sale
+                    </a>
+                </div>
+                <!-- sale image -->
+                <div class="w-full md:w-1/2">
+                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop" 
+                         alt="Sale Banner" 
+                         class="w-full h-[400px] object-cover">
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- ad section end -->
+    <!-- flash sale section end -->
 
-
+        <!-- features -->
+        <div class="container py-10">
+            <div class="lg:w-10/12 grid md:grid-cols-3 gap-6 lg:gap-8 mx-auto">
+                <!-- single feature -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-primary/10 p-3 rounded-lg">
+                            <img src="images/icons/delivery-van.svg" class="w-8 h-8">
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl text-gray-800">Free Shipping</h4>
+                            <p class="text-gray-600">On orders over ₹999</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- single feature -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-primary/10 p-3 rounded-lg">
+                            <img src="/images/icons/money-back.svg" class="w-8 h-8">
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl text-gray-800">Money Back</h4>
+                            <p class="text-gray-600">30 Days Guarantee</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- single feature -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-primary/10 p-3 rounded-lg">
+                            <img src="/images/icons/service-hours.svg" class="w-8 h-8">
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl text-gray-800">24/7 Support</h4>
+                            <p class="text-gray-600">Expert Assistance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- features end -->
+    
 
 <%- include('./partials/footer') %>
