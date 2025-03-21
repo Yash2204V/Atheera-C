@@ -155,10 +155,10 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-baseline gap-2">
                                         <% if (product.variants[0].discount) { %>
-                                            <span class="text-xl font-bold text-primary">₹<%=
-                                                    product.variants[0].discount %></span>
-                                            <span class="text-sm text-gray-400 line-through">₹<%=
+                                            <span class="text-base text-gray-400 line-through">₹<%=
                                                     product.variants[0].price %></span>
+                                            <span class="text-lg font-bold text-primary">₹<%=
+                                                    product.variants[0].discount %></span>
                                             <% } else { %>
                                                 <span class="text-xl font-bold text-primary">₹<%=
                                                         product.variants[0].price %></span>
@@ -209,7 +209,7 @@
             document.getElementById('filter-overlay').classList.add('hidden');
             document.body.style.overflow = '';
         });
-    
+
     </script>
 
     <script src="/javascripts/external-script.js"></script>
