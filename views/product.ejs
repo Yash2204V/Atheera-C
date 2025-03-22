@@ -56,25 +56,32 @@
             <div class="mt-4 flex flex-wrap items-baseline gap-3">
                 <span class="text-2xl sm:text-3xl font-semibold text-primary">₹<%= product.variants[0].price %></span>
                 <span class="text-base sm:text-lg text-gray-500 line-through">₹<%= product.variants[0].price + 10 %>
-                        </span>
+                </span>
             </div>
 
             <!-- size -->
-            <div class="mt-6">
-                <h3 class="text-base text-gray-800 mb-2">Size</h3>
-                <div class="flex flex-wrap items-center gap-3">
-                    <% product.variants.forEach(function(variant){ %>
-                        <div class="size-selector">
-                            <input type="radio" name="size" class="hidden" id="size-<%= variant.size %>">
-                            <label for="size-<%= variant.size %>"
-                                class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-lg text-sm cursor-pointer hover:border-primary hover:text-primary transition-colors">
-                                <%= variant.size %>
-                            </label>
-                        </div>
-                        <% }) %>
+            <div class="mt-4">
+                <h3 class="text-base text-gray-800 mb-1">Size</h3>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <% const availableSizes=product.variants.map(v=> v.size); %>
+                        <% ['XS', 'S' , 'M' , 'L' , 'XL' , 'XXL' , 'XXXL' ].forEach(function(size){ %>
+                            <!-- single size -->
+                            <div class="size-selector">
+                                <input type="radio" name="size" class="hidden " id="size-<%= size %>"
+                                    <%=availableSizes.includes(size) ? '' : 'disabled' %>>
+                                <label for="size-<%= size %>"
+                                    class="text-base p-2 border border-gray-200 rounded-sm h-6 w-9 flex items-center justify-center cursor-pointer shadow-sm text-gray-600 <%= availableSizes.includes(size) ? 'hover:border-primary hover:text-primary transition-colors' : 'opacity-50 cursor-not-allowed' %>">
+                                    <span class="relative <%= availableSizes.includes(size) ? 'text-red-500' : 'line-through text-gray-500' %>"><%= size %></span>
+
+                                </label>
+                            </div>
+                            <!-- single size end -->
+                            <% }) %>
                 </div>
             </div>
             <!-- size end -->
+
+            
 
             <!-- color -->
             <div class="mt-6">
@@ -86,10 +93,10 @@
                                 ? 'checked' : '' %>>
                             <label for="color-<%= index %>"
                                 class="w-8 h-8 rounded-full border-2 border-gray-300 cursor-pointer hover:border-primary transition-colors"
-                                style=`background-color: red` >
+                                style=`background-color: red`>
                             </label>
                             <p>
-                                <%= variant.quality %>
+                                <%= variant.color %>
                             </p>
                         </div>
                         <% }) %>
