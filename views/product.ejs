@@ -78,8 +78,9 @@
                         <input type="radio" name="color" class="hidden" id="color-<%= index %>" <%= index === 0 ? 'checked' : '' %>>
                         <label for="color-<%= index %>"
                                class="w-8 h-8 rounded-full border-2 border-gray-300 cursor-pointer hover:border-primary transition-colors"
-                               style=`background-color: <%= variant.tone %>`>
+                               style=`background-color: red >`>
                         </label>
+                        <p><%= variant.quality %></p>
                     </div>
                 <% }) %>
             </div>
@@ -151,7 +152,7 @@
                 <th class="py-2 px-4 border border-gray-300 w-40 font-medium">Color</th>
                 <td class="py-2 px-4 border border-gray-300 capitalize">
                     <% product.variants.forEach((variant, index)=> { %>
-                        <%= variant.tone %><%= index < product.variants.length - 1 ? ', ' : '' %>
+                        <%= variant.quality %><%= index < product.variants.length - 1 ? ', ' : '' %>
                     <% }) %>
                 </td>
             </tr>

@@ -29,8 +29,8 @@ const upload = multer({ storage: storage });
 // 🔍 Get admin panel data
 router.get("/", adminAuthMiddleware, searchAdminMod);
 
-// ➕ Create a new product (allows up to 5 images)
-router.post("/create", upload.array('images', 5), adminAuthMiddleware, createProduct);
+// ➕ Create a new product (allows up to 7 images)
+router.post("/create", upload.array('images', 7), adminAuthMiddleware, createProduct);
 
 
 // ❌ Delete a product by ID

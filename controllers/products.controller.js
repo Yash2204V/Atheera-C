@@ -201,10 +201,7 @@ const cart = async (req, res) => {
             }
         }
         
-        // Calculate GST (assuming 18%)
-        const gstRate = 18;
-        const gstAmount = (totalPrice * gstRate) / 100;
-        const finalTotal = totalPrice + gstAmount;
+        const finalTotal = totalPrice;
         
         // Get success/error messages from session
         const success = req.session.cartSuccess || req.session.enquirySuccess || '';
@@ -222,8 +219,6 @@ const cart = async (req, res) => {
             cartSummary: {
                 subtotal,
                 discount: totalDiscount,
-                gstRate,
-                gstAmount,
                 total: finalTotal
             },
             success,
@@ -238,8 +233,6 @@ const cart = async (req, res) => {
             cartSummary: {
                 subtotal: 0,
                 discount: 0,
-                gstRate: 18,
-                gstAmount: 0,
                 total: 0
             },
             error: "Failed to load cart. Please try again."

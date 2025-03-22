@@ -11,12 +11,20 @@ if(fileInput){
 function handleFiles(files) {
     const p = document.getElementById("status");
     let count = files.length;
-    if (count > 5) {
-        alert('You can only upload up to 5 images.');
-        count = 5; // Limit to 5 images
-        files = Array.from(files).slice(0, 5);
+    if (count > 7) {
+        alert('You can only upload up to 7 images.');
+        count = 7; // Limit to 7 images
+        files = Array.from(files).slice(0, 7);
+    } else if (count < 3) {
+        alert('You must upload at least 3 images.');
+        count = 0; // Reset count if less than 3 images
+        files = [];
     }
-    p.textContent = `Uploaded ${count}, left ${5 - count}`;
+    if (count > 0) {
+        p.textContent = `Uploaded ${count}, left ${7 - count} image(s)`;
+    } else {
+        p.textContent = 'You must upload at least 3 images.';
+    }
 
     document.getElementById('fileCount').textContent = `Selected ${count} image(s)`;
     // Here you could add code to show thumbnails or image previews if needed
@@ -49,12 +57,14 @@ if(addVariant){
                                                 <option value="M">M</option>
                                                 <option value="L">L</option>
                                                 <option value="XL">XL</option>
+                                                <option value="XXL">XXL</option>
+                                                <option value="XXXL">XXXL</option>
                                             </select>
                                         </div>
     
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
-                                            <input name="variants[${index}][tone]" type="text" 
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Quality</label>
+                                            <input name="variants[${index}][quality]" type="text" 
                                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                         </div>
                                     </div>
@@ -122,12 +132,14 @@ if(addUpdatedVariant){
                             <option value="M">M</option>
                             <option value="L">L</option>
                             <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="XXXL">XXXL</option>
                         </select>
                     </div>
     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
-                        <input name="variants[${index}][tone]" type="text" required
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Quality</label>
+                        <input name="variants[${index}][quality]" type="text" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>

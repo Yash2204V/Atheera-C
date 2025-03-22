@@ -1823,6 +1823,10 @@ video {
   text-decoration-line: line-through;
 }
 
+.caret-inherit {
+  caret-color: inherit;
+}
+
 .opacity-0 {
   opacity: 0;
 }

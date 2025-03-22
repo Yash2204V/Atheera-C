@@ -28,9 +28,7 @@
                         <% 
                             let price = Product.product.variants[0].price; 
                             let discountedPrice = Product.product.variants[0].discount || price;
-                            let gstRate = 18;
-                            let gstAmount = (discountedPrice * gstRate) / 100;
-                            let finalPrice = discountedPrice + gstAmount;
+                            let finalPrice = discountedPrice;
                         %>
                         
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -48,22 +46,20 @@
                                         <h3 class="text-lg font-semibold text-gray-800 mb-2">
                                             <%= Product.product.title %>
                                         </h3>
-                                        <p class="text-sm text-gray-500 mb-4">
+                                        <p class="text-sm text-gray-500 mb-4 capitalize">
                                             <%= Product.product.category %> › <%= Product.product.subCategory %> › 
                                             <%= Product.product.subSubCategory %>
                                         </p>
                                         
                                         <!-- Price Info -->
-                                        <div class="flex flex-wrap items-center gap-4 mb-4">
+                                        <div class="flex flex-wrap items-center gap-2 mb-4">
                                             <% if (Product.product.variants[0].discount) { %>
+                                                <span class="text-lg text-gray-400 line-through">₹<%= Product.product.variants[0].price %></span>
                                                 <span class="text-xl font-bold text-primary">₹<%= Product.product.variants[0].discount %></span>
-                                                <span class="text-sm text-gray-400 line-through">₹<%= Product.product.variants[0].price %></span>
                                             <% } else { %>
                                                 <span class="text-xl font-bold text-primary">₹<%= Product.product.variants[0].price %></span>
                                             <% } %>
-                                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm">
-                                                GST: ₹<%= gstAmount.toFixed(2) %>
-                                            </span>
+                                          
                                         </div>
 
                                         <!-- Size & Quantity Controls -->
@@ -79,6 +75,8 @@
                                                         <option value="M" <%=Product.size==='M' ? 'selected' : '' %>>M</option>
                                                         <option value="L" <%=Product.size==='L' ? 'selected' : '' %>>L</option>
                                                         <option value="XL" <%=Product.size==='XL' ? 'selected' : '' %>>XL</option>
+                                                        <option value="XXL" <%=Product.size==='XXL' ? 'selected' : '' %>>XXL</option>
+                                                        <option value="XXL" <%=Product.size==='XXL' ? 'selected' : '' %>>XXXL</option>
                                                     </select>
                                                 <% } %>
 
@@ -105,12 +103,12 @@
                                                         class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors">
                                                     Update
                                                 </button>
+                                                <a href="/products/deleted/<%= Product.product._id %>"
+                                                   class="text-red-500 hover:text-red-600 transition-colors">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
                                             </form>
 
-                                            <a href="/products/deleted/<%= Product.product._id %>"
-                                               class="text-red-500 hover:text-red-600 transition-colors">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -135,10 +133,7 @@
                         <span>Discount</span>
                         <span class="text-green-600">-₹<%= cartSummary ? cartSummary.discount.toFixed(2) : '0.00' %></span>
                     </div>
-                    <div class="flex justify-between text-gray-600">
-                        <span>GST (<%= cartSummary ? cartSummary.gstRate : '18' %>%)</span>
-                        <span>₹<%= cartSummary ? cartSummary.gstAmount.toFixed(2) : '0.00' %></span>
-                    </div>
+                
                     
                     <div class="border-t border-gray-200 pt-4">
                         <div class="flex justify-between items-center">
