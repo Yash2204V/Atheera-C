@@ -190,28 +190,6 @@
         </div>
     </div>
 
-    <script>
-        // Filter toggle functionality for mobile
-        document.getElementById('filter-toggle')?.addEventListener('click', () => {
-            document.getElementById('filter-sidebar').classList.remove('hidden');
-            document.getElementById('filter-overlay').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        });
-
-        document.getElementById('close-filter')?.addEventListener('click', () => {
-            document.getElementById('filter-sidebar').classList.add('hidden');
-            document.getElementById('filter-overlay').classList.add('hidden');
-            document.body.style.overflow = '';
-        });
-
-        document.getElementById('filter-overlay')?.addEventListener('click', () => {
-            document.getElementById('filter-sidebar').classList.add('hidden');
-            document.getElementById('filter-overlay').classList.add('hidden');
-            document.body.style.overflow = '';
-        });
-
-    </script>
-
     <script src="/javascripts/external-script.js"></script>
 
     <%- include('./partials/footer') %>
