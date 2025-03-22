@@ -4,19 +4,20 @@
     <div class="container pt-4 pb-6 grid lg:grid-cols-2 gap-6">
         <!-- product image -->
         <div>
-            <div class="relative aspect-square">
-                <img id="main-img"
+            <div>
+                <img id="main-img" class="w-full"
                     src="data:<%= product.images[0].contentType %>;base64,<%= product.images[0].imageBuffer.toString('base64') %>"
-                    alt="<%= product.title %>" class="w-full h-full object-contain rounded-lg">
+                    alt="Main Image">
             </div>
-            <div class="grid grid-cols-5 gap-2 sm:gap-4 mt-4">
+            <div class="grid grid-cols-5 gap-4 mt-4">
                 <% product.images.forEach((image)=>{ %>
-                    <div class="aspect-square">
+                    <div>
                         <img src="data:<%= image.contentType %>;base64,<%= image.imageBuffer.toString('base64') %>"
-                            class="single-img w-full h-full object-cover cursor-pointer border border-primary rounded-lg hover:opacity-75 transition-opacity">
+                            class="single-img w-full cursor-pointer border border-primary">
                     </div>
                     <% }) %>
             </div>
+
         </div>
         <!-- product image end -->
 
