@@ -82,6 +82,29 @@ if (filterToggle && filterSidebar && filterOverlay) {
     });
 }
 
+// -----------------------------------------------------------------------------
+
+let mainImg = document.getElementById('main-img')
+let imgBars = document.getElementsByClassName('single-img')
+
+if(mainImg && imgBars){
+    for (let imgBar of imgBars) {
+        imgBar.addEventListener('click', function () {
+            clearActive()
+            let imgPath = this.getAttribute('src')
+            mainImg.setAttribute('src', imgPath)
+            this.classList.add('border-primary')
+        })
+    }
+    
+    function clearActive() {
+        for (let imgBar of imgBars) {
+            imgBar.classList.remove('border-primary')
+        }
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const scrollPosition = localStorage.getItem("scrollPosition");
     if (scrollPosition) {

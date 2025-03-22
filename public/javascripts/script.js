@@ -17,13 +17,16 @@ let categoryBar = document.querySelector('#categoryBar')
 let mobileCategory = document.querySelector('#mobileCategory')
 let closeCategory = document.querySelector('#closeCategory')
 
-categoryBar.addEventListener('click', function () {
-    mobileCategory.classList.remove('hidden')
-})
+if(categoryBar && closeCategory){
+    categoryBar.addEventListener('click', function () {
+        mobileCategory.classList.remove('hidden')
+    })
+    
+    closeCategory.addEventListener('click', function () {
+        mobileCategory.classList.add('hidden')
+    })
+}
 
-closeCategory.addEventListener('click', function () {
-    mobileCategory.classList.add('hidden')
-})
 
 // let the user when click to filter: the relative div appear, and when the user either click to filter or closeIcon: the relative div will disappear.
 if(filter){
