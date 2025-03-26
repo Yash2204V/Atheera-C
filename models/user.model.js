@@ -94,11 +94,6 @@ const userSchema = new mongoose.Schema({
     default: "user" 
   },
   
-  // Account status
-  isActive: {
-    type: Boolean,
-    default: true
-  },
   lastLogin: {
     type: Date,
     default: Date.now
