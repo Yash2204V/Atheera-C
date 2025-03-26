@@ -11,12 +11,48 @@ const mongoose = require("mongoose");
  */
 const productSchema = new mongoose.Schema({
     // Basic product information
+    // Product images
+    images: {
+        type: [{
+            imageBuffer: Buffer,
+            contentType: String
+        }],
+        validate: {
+            validator: function (val) {
+                if (!val || val.length === 0) {
+                    throw new Error("At least one image is required");
+                }
+                if (val.length > 7 || val.length < 3) {
+                    throw new Error("You can upload a ranges from 3 to 7 images");
+                }
+                return true;
+            },
+            message: props => props.reason
+        }
+    },
+    // Title
     title: {
         type: String,
         required: [true, 'Product title is required'],
         trim: true,
         maxlength: [100, 'Title cannot exceed 100 characters']
     },
+    // Product details
+    description: {
+        type: String,
+        default: "",
+        trim: true,
+        required: [true, 'Description is required'],
+        maxlength: [2000, 'Description cannot exceed 2000 characters']
+    },
+    fabricDetails: {
+        type: String,
+        default: "",
+        trim: true,
+        required: [true, 'Fabric Details is required'],
+        maxlength: [2000, 'Fabric Details cannot exceed 2000 characters']
+    },
+    // Categorization
     category: {
         type: String,
         enum: {
@@ -39,59 +75,11 @@ const productSchema = new mongoose.Schema({
         trim: true,
         index: true
     },
-    brand: {
+    quality: {
         type: String,
-        default: "",
-        trim: true
+        required: true,
+        default: ""
     },
-
-    // Product details
-    description: {
-        type: String,
-        default: "",
-        trim: true,
-        required: [true, 'Description is required'],
-        maxlength: [2000, 'Description cannot exceed 2000 characters']
-    },
-
-    weight: {
-        type: String,
-        default: "",
-        trim: true
-    },
-
-    // Product images
-    images: {
-        type: [{
-            imageBuffer: Buffer,
-            contentType: String
-        }],
-        validate: {
-            validator: function (val) {
-                if (!val || val.length === 0) {
-                    throw new Error("At least one image is required");
-                }
-                if (val.length > 7 || val.length < 3) {
-                    throw new Error("You can upload a ranges from 3 to 7 images");
-                }
-                return true;
-            },
-            message: props => props.reason
-        }
-    },
-
-    // Product status
-    availability: {
-        type: Boolean,
-        default: true,
-        index: true
-    },
-    featured: {
-        type: Boolean,
-        default: false,
-        index: true
-    },
-
     // Product variants
     variants: [{
         _id: {
@@ -103,6 +91,16 @@ const productSchema = new mongoose.Schema({
             required: [true, 'Model number is required'],
             trim: true
         },
+        price: {
+            type: Number,
+            required: [true, 'Price is required'],
+            min: [0, 'Price cannot be negative']
+        },
+        discount: {
+            type: Number,
+            default: 0,
+            min: [0, 'Discount cannot be negative']
+        },
         size: {
             type: String,
             enum: {
@@ -112,26 +110,11 @@ const productSchema = new mongoose.Schema({
             required: true,
             default: "None"
         },
-        discount: {
-            type: Number,
-            default: 0,
-            min: [0, 'Discount cannot be negative']
-        },
-        price: {
-            type: Number,
-            required: [true, 'Price is required'],
-            min: [0, 'Price cannot be negative']
-        },
         quantity: {
             type: Number,
             required: [true, 'Quantity is required'],
             min: [0, 'Quantity cannot be negative']
         },
-        quality: {
-            type: String,
-            required: true,
-            default: ""
-        }
     }],
 
     // Timestamps

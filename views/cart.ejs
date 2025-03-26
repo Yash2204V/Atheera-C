@@ -67,8 +67,8 @@
                                         <!-- Price -->
                                         <div class="flex items-baseline space-x-2 mb-2">
                                             <% if (variant.discount) { %>
+                                                <span class="text-xl text-gray-400 line-through">₹<%= price %></span>
                                                 <span class="text-2xl font-bold text-primary">₹<%= variant.discount %></span>
-                                                <span class="text-gray-400 line-through">₹<%= price %></span>
                                             <% } else { %>
                                                 <span class="text-2xl font-bold text-primary">₹<%= price %></span>
                                             <% } %>

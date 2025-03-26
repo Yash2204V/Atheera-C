@@ -250,6 +250,7 @@ const addCart = async (req, res) => {
         const { productid } = req.params;
         const { quantity = 1, size = "None", direct } = req.query;
         const user = req.user;
+        console.log("Add to Cart", productid, quantity, size, direct);
         
         // Validate inputs
         if (!user) {
@@ -263,6 +264,7 @@ const addCart = async (req, res) => {
 
         // Get product details
         const product = await Product.findById(productid);
+        console.log("Product", product);
         
         if (!product) {
             req.session.cartError = "Product not found";
@@ -270,14 +272,6 @@ const addCart = async (req, res) => {
         }
         
         const { category, subCategory, subSubCategory, variants } = product;
-        
-        // Check if product is available
-        if (!product.availability) {
-            req.session.cartError = "Product is out of stock";
-            return direct ? 
-                res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) : 
-                res.redirect(`/products/product/${productid}`);
-        }
         
         // Find selected variant
         const selectedVariant = variants.find(v => v.size === size) || variants[0];

@@ -21,7 +21,7 @@ const searchAdminMod = async (req, res) => {
     const aggregationPipeline = [
         { $match: searchCriteria },
         { $limit: DEFAULT_LIMIT },
-        { $count: 'total' } // This stage counts all documents before limit and skip
+        { $count: 'total' }
     ];
 
     const [products] = await Promise.all([
@@ -30,22 +30,22 @@ const searchAdminMod = async (req, res) => {
     ]);
 
     const totalProducts = await Product.find(searchCriteria).countDocuments();
-    // console.log(totalProducts);
 
     res.render("admin-dashboard", { products, searchQuery, totalProducts, currentPage: parseInt(page) });
 }
 
 const createProduct = async (req, res) => {
-    
     try {
         const imageDocs = req.files.map(file => ({
-            imageBuffer: file.buffer,  // Store as buffer
-            contentType: file.mimetype, // Store MIME type
+            imageBuffer: file.buffer,
+            contentType: file.mimetype,
         }));
     
         const productData = {
             ...req.body,
-            images: imageDocs
+            images: imageDocs,
+            quality: req.body.quality || "",
+            fabricDetails: req.body.fabricDetails || "Not specified"
         };
 
         await Product.create(productData);
@@ -59,9 +59,8 @@ const createProduct = async (req, res) => {
 }
 
 const deleteProduct = async (req, res) => {
-
     try {
-        const product = await Product.findOneAndDelete({ _id: req.params.productid });
+        await Product.findOneAndDelete({ _id: req.params.productid });
         res.redirect("/admin-haha");
     } catch (e) {
         res.status(400).json({
@@ -71,7 +70,6 @@ const deleteProduct = async (req, res) => {
 }
 
 const updatePageP = async (req, res) => {
-
     try {
         const product = await Product.findOne({ _id: req.params.productid });
         res.render("update-product", { product });
@@ -83,14 +81,23 @@ const updatePageP = async (req, res) => {
 }
 
 const editProduct = async (req, res) => {
-    // console.log(req.params.productid);
-    const { title, rating, category, subCategory, subSubCategory, brand, availability, variants, description, weight } = req.body;
-    console.log("THIS IS DATA", req.body);
-    
-
     try {
-        await Product.findOneAndUpdate({ _id: req.params.productid }, { title, rating, category, subCategory, subSubCategory, brand, availability, variants, description, weight });
-        // console.log(product);
+        const { title, category, subCategory, subSubCategory, description, fabricDetails, quality, variants } = req.body;
+        
+        await Product.findOneAndUpdate(
+            { _id: req.params.productid }, 
+            { 
+                title, 
+                category, 
+                subCategory, 
+                subSubCategory, 
+                description,
+                fabricDetails,
+                quality,
+                variants 
+            }
+        );
+        
         res.redirect("/admin-haha");
     } catch (e) {
         res.status(400).json({
@@ -107,7 +114,7 @@ const makeAdmin = async (req, res) => {
             const user = await User.findOneAndUpdate(
                 { _id: req.user._id },
                 { role: "admin" },
-                { new: true } // Return updated document
+                { new: true }
             );
 
             return res.status(200).json({
@@ -138,4 +145,4 @@ module.exports = {
     updatePageP,
     editProduct,
     makeAdmin
-}
+};
