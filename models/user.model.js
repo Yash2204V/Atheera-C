@@ -62,11 +62,19 @@ const userSchema = new mongoose.Schema({
       default: 1, 
       required: true,
       min: [1, 'Quantity must be at least 1'],
-      max: [10, 'Quantity cannot exceed 10']
+      max: [10, 'Quantity cannot exceed 10'],
+      validate: {
+        validator: Number.isInteger,
+        message: 'Quantity must be a whole number'
+      }
     },
     size: { 
       type: String, 
-      required: true 
+      required: true,
+      enum: {
+        values: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "None"],
+        message: '{VALUE} is not a supported size'
+      }
     },
     addedAt: {
       type: Date,

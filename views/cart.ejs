@@ -30,6 +30,8 @@
                         const variant = Product.product.variants[0];
                         const price = variant.price;
                         const discountedPrice = variant.discount || price;
+                        const selectedVariant = Product.product.variants.find(v => v.size === Product.size);
+
                     %>
                     
                     <div class="bg-white rounded-lg shadow-sm overflow-hidden group">
@@ -66,11 +68,11 @@
                                         
                                         <!-- Price -->
                                         <div class="flex items-baseline space-x-2 mb-2">
-                                            <% if (variant.discount) { %>
-                                                <span class="text-xl text-gray-400 line-through">₹<%= price %></span>
-                                                <span class="text-2xl font-bold text-primary">₹<%= variant.discount %></span>
+                                            <% if (selectedVariant.discount) { %>
+                                                <span class="text-xl text-gray-400 line-through">₹<%= selectedVariant.price %> </span>
+                                                <span class="text-2xl font-bold text-primary">₹<%= selectedVariant.discount %> </span>
                                             <% } else { %>
-                                                <span class="text-2xl font-bold text-primary">₹<%= price %></span>
+                                                <span class="text-2xl font-bold text-primary">₹<%= selectedVariant.price %></span>
                                             <% } %>
                                         </div>
                                     </div>

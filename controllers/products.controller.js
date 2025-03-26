@@ -149,6 +149,10 @@ const product = async (req, res) => {
             cartItem = req.user.cart.find(item => item.product.toString() === product._id.toString());
         }
 
+        // Sort variants by size order
+        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'None'];
+        product.variants.sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size));
+
         // Render product page
         res.render("product", { 
             product,
@@ -191,7 +195,7 @@ const cart = async (req, res) => {
             const product = await Product.findById(item.product);
             
             if (product) {
-                const variant = product.variants.find(p => p.size === item.size) || product.variants[0];
+                const variant = product.variants.find(v => v.size === item.size) || product.variants[0];
                 const originalPrice = variant ? variant.price : 0;
                 const discountedPrice = variant && variant.discount ? variant.discount : originalPrice;
                 
@@ -268,14 +272,21 @@ const addCart = async (req, res) => {
             return res.redirect("/products/cart");
         }
         
-        const { category, subCategory, subSubCategory, variants } = product;
+        const { category, subCategory, subSubCategory } = product;
         
         // Find selected variant
-        const selectedVariant = variants.find(v => v.size === size) || variants[0];
+        const selectedVariant = product.variants.find(v => v.size === size);
+        
+        if (!selectedVariant) {
+            req.session.cartError = "Selected size not available";
+            return direct ? 
+                res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) : 
+                res.redirect(`/products/product/${productid}`);
+        }
         
         // Check if variant has stock
         if (selectedVariant.quantity < parseInt(quantity)) {
-            req.session.cartError = `Only ${selectedVariant.quantity} items available`;
+            req.session.cartError = `Only ${selectedVariant.quantity} items available in size ${size}`;
             return direct ? 
                 res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) : 
                 res.redirect(`/products/product/${productid}`);
@@ -293,7 +304,7 @@ const addCart = async (req, res) => {
             
             // Check if new quantity exceeds stock
             if (newQuantity > selectedVariant.quantity) {
-                req.session.cartError = `Cannot add more than ${selectedVariant.quantity} items`;
+                req.session.cartError = `Cannot add more than ${selectedVariant.quantity} items of this size`;
                 return direct ? 
                     res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) : 
                     res.redirect(`/products/product/${productid}`);
@@ -404,11 +415,16 @@ const updateCart = async (req, res) => {
         }
         
         // Find selected variant
-        const selectedVariant = product.variants.find(v => v.size === size) || product.variants[0];
+        const selectedVariant = product.variants.find(v => v.size === size);
+        
+        if (!selectedVariant) {
+            req.session.cartError = "Selected size not available";
+            return res.redirect("/products/cart");
+        }
         
         // Check if variant has stock
         if (selectedVariant.quantity < parseInt(quantity)) {
-            req.session.cartError = `Only ${selectedVariant.quantity} items available`;
+            req.session.cartError = `Only ${selectedVariant.quantity} items available in size ${size}`;
             return res.redirect("/products/cart");
         }
 

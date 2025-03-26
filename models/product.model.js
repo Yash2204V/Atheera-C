@@ -99,7 +99,13 @@ const productSchema = new mongoose.Schema({
         discount: {
             type: Number,
             default: 0,
-            min: [0, 'Discount cannot be negative']
+            min: [0, 'Discount cannot be negative'],
+            validate: {
+                validator: function(value) {
+                    return value <= this.price;
+                },
+                message: 'Discount price cannot be greater than regular price'
+            }
         },
         size: {
             type: String,
@@ -113,7 +119,11 @@ const productSchema = new mongoose.Schema({
         quantity: {
             type: Number,
             required: [true, 'Quantity is required'],
-            min: [0, 'Quantity cannot be negative']
+            min: [0, 'Quantity cannot be negative'],
+            validate: {
+                validator: Number.isInteger,
+                message: 'Quantity must be a whole number'
+            }
         },
     }],
 

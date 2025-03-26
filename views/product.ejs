@@ -49,62 +49,85 @@
             </div>
 
             <!-- Size Options -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Available Sizes</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <% ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'].forEach(size => { %>
-                        <% const variant = product.variants.find(v => v.size === size); %>
-                        <% if (variant) { %>
-                            <div class="border rounded-lg p-3 <%= variant.quantity > 0 ? 'hover:border-primary cursor-pointer' : 'opacity-50 cursor-not-allowed' %>">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="font-semibold text-lg"><%= size %></span>
-                                    <% if (variant.quantity <= 0) { %>
-                                        <span class="text-red-500 text-sm">Out of Stock</span>
-                                    <% } %>
-                                </div>
-                                <div class="space-y-1">
-                                    <% if (variant.discount) { %>
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-gray-400 text-sm line-through">₹<%= variant.price %></span>
-                                            <span class="text-primary font-bold">₹<%= variant.discount %></span>
+            <form action="/products/addtocart/<%= product._id %>" method="GET" class="space-y-6">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Select Size</h3>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <% product.variants.forEach(variant => { %>
+                            <% if (variant.quantity > 0) { %>
+                                <label class="relative group cursor-pointer">
+                                    <input type="radio" name="size" value="<%= variant.size %>" 
+                                           class="absolute opacity-0 w-full h-full cursor-pointer peer"
+                                           required>
+                                    <div class="border-2 rounded-lg p-3 transition-all duration-200 
+                                                group-hover:border-primary
+                                                peer-checked:border-primary peer-checked:bg-primary/5">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-semibold text-lg"><%= variant.size %></span>
+                                            <% if (variant.quantity <= 5) { %>
+                                                <span class="text-yellow-600 text-sm">Only <%= variant.quantity %> left</span>
+                                            <% } %>
                                         </div>
-                                    <% } else { %>
-                                        <span class="text-primary font-bold">₹<%= variant.price %></span>
-                                    <% } %>
-                                </div>
-                            </div>
-                        <% } %>
-                    <% }); %>
+                                        <div class="space-y-1">
+                                            <% if (variant.discount) { %>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-gray-400 text-sm line-through">₹<%= variant.price %></span>
+                                                    <span class="text-primary font-bold">₹<%= variant.discount %></span>
+                                                </div>
+                                            <% } else { %>
+                                                <span class="text-primary font-bold">₹<%= variant.price %></span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </label>
+                            <% } %>
+                        <% }) %>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Quantity -->
-            <div class="flex items-center gap-3 mb-6">
-                <h3 class="text-lg font-semibold text-gray-800">Quantity:</h3>
-                <div class="flex items-center border border-gray-300 rounded-lg divide-x divide-gray-300">
-                    <input type="number" value="1" class="w-14 h-10 text-center border-0 focus:ring-0 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors" min="1" max="10">
+                <!-- Quantity -->
+                <div class="flex items-center gap-3 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800">Quantity:</h3>
+                    <div class="flex items-center border border-gray-300 rounded-lg divide-x divide-gray-300">
+                        <button type="button" data-action="decrement"
+                                class="quantity-btn px-4 py-3 text-gray-600 hover:bg-gray-100">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" 
+                               name="quantity"
+                               value="1"
+                               min="1"
+                               max="10"
+                               class="w-16 text-center border-0 focus:ring-0"
+                               required>
+                        <button type="button" data-action="increment"
+                                class="quantity-btn px-4 py-3 text-gray-600 hover:bg-gray-100">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row gap-4">
-                <a href="/products/addtocart/<%= product._id %>"
-                    class="flex-1 bg-primary border border-primary text-white px-8 py-3 font-medium rounded-lg hover:bg-transparent hover:text-primary transition-colors text-center flex items-center justify-center gap-2">
-                    <i class="fas fa-shopping-bag"></i>
-                    Add to Cart
-                </a>
-                <a href="/products/wishlist/add/<%= product._id %>"
-                    class="flex border border-gray-300 text-gray-600 px-8 py-3 font-medium rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-colors items-center justify-center gap-2">
-                    <i class="fas fa-heart"></i>
-                    Wishlist
-                </a>
-                <button id="enquiry-btn-single"
-                    class="flex-1 border border-gray-300 text-gray-600 px-8 py-3 font-medium rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-colors flex items-center justify-center gap-2"
-                    data-value="<%= product._id %>">
-                    <i class="far fa-envelope"></i>
-                    Enquiry
-                </button>
-            </div>
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit"
+                            class="flex-1 bg-primary border border-primary text-white px-8 py-3 font-medium rounded-lg hover:bg-transparent hover:text-primary transition-colors text-center flex items-center justify-center gap-2">
+                        <i class="fas fa-shopping-bag"></i>
+                        Add to Cart
+                    </button>
+                    <a href="/products/wishlist/add/<%= product._id %>"
+                        class="flex border border-gray-300 text-gray-600 px-8 py-3 font-medium rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-colors items-center justify-center gap-2">
+                        <i class="fas fa-heart"></i>
+                        Wishlist
+                    </a>
+                    <button id="enquiry-btn-single"
+                            type="button"
+                            class="flex-1 border border-gray-300 text-gray-600 px-8 py-3 font-medium rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-colors flex items-center justify-center gap-2"
+                            data-value="<%= product._id %>">
+                        <i class="far fa-envelope"></i>
+                        Enquiry
+                    </button>
+                </div>
+            </form>
 
             <!-- Social Share -->
             <div class="flex items-center gap-3 mt-6">
@@ -154,6 +177,7 @@
     </div>
 </div>
 <!-- product details end -->
+
     <!-- Related Products -->
     <div class="container pb-16">
         <h2 class="text-2xl font-medium text-gray-800 uppercase mb-6">Related Products</h2>
@@ -209,6 +233,32 @@
             <% }) %>
         </div>
     </div>
+
+    <script>
+        // Quantity input handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInput = document.querySelector('input[name="quantity"]');
+            const decrementBtn = document.querySelector('[data-action="decrement"]');
+            const incrementBtn = document.querySelector('[data-action="increment"]');
+
+            function updateQuantity(newValue) {
+                const value = Math.min(Math.max(parseInt(newValue) || 1, 1), 10);
+                quantityInput.value = value;
+            }
+
+            decrementBtn.addEventListener('click', () => {
+                updateQuantity(parseInt(quantityInput.value) - 1);
+            });
+
+            incrementBtn.addEventListener('click', () => {
+                updateQuantity(parseInt(quantityInput.value) + 1);
+            });
+
+            quantityInput.addEventListener('change', (e) => {
+                updateQuantity(e.target.value);
+            });
+        });
+    </script>
 
     <script src="/javascripts/external-script.js"></script>
 
