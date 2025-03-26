@@ -67,14 +67,11 @@ const shop = async (req, res) => {
 
         // Count total products matching criteria
         const totalProducts = await Product.find(searchCriteria).countDocuments();
-        // console.log("Total Products", totalProducts);
-        
 
         // Fetch products with sorting and pagination
         const products = await Product.find(searchCriteria)
             .sort({ [sortBy]: order })
             .limit(DEFAULT_LIMIT * pageNum);
-        // console.log("Products", products.length);
 
         // Render shop page with data
         res.render("shop", {
@@ -89,7 +86,6 @@ const shop = async (req, res) => {
             subCategory,
             minPrice,
             maxPrice,
-            // Add pagination info
             pagination: {
                 currentPage: pageNum,
                 totalPages: Math.ceil(totalProducts / DEFAULT_LIMIT),
@@ -100,10 +96,8 @@ const shop = async (req, res) => {
     } catch (error) {
         dbgr("🛑 Shop Error:", error);
         
-        // Set error message in session
         req.session.shopError = "Failed to load products. Please try again.";
         
-        // Render shop page with error
         res.status(500).render("shop", { 
             Category,
             products: [],
@@ -149,17 +143,23 @@ const product = async (req, res) => {
         req.session.enquirySuccess = null;
         req.session.enquiryError = null;
 
+        // Get user's cart item if exists
+        let cartItem = null;
+        if (req.user) {
+            cartItem = req.user.cart.find(item => item.product.toString() === product._id.toString());
+        }
+
         // Render product page
         res.render("product", { 
             product,
             relatedProducts,
             success,
-            error
+            error,
+            cartItem
         });
     } catch (error) {
         dbgr("🛑 Product Fetch Error:", error);
         
-        // Render error page
         res.status(500).render("error", { 
             message: "Error loading product",
             error: { status: 500 }
@@ -227,7 +227,6 @@ const cart = async (req, res) => {
     } catch (error) {
         dbgr("🛑 Cart Error:", error);
         
-        // Render cart page with error
         res.status(500).render("cart", { 
             user: req.user || "",
             cartSummary: {
@@ -235,7 +234,7 @@ const cart = async (req, res) => {
                 discount: 0,
                 total: 0
             },
-            error: "Failed to load cart. Please try again."
+            error: "Failed to load cart"
         });
     }
 };
@@ -250,7 +249,6 @@ const addCart = async (req, res) => {
         const { productid } = req.params;
         const { quantity = 1, size = "None", direct } = req.query;
         const user = req.user;
-        console.log("Add to Cart", productid, quantity, size, direct);
         
         // Validate inputs
         if (!user) {
@@ -264,7 +262,6 @@ const addCart = async (req, res) => {
 
         // Get product details
         const product = await Product.findById(productid);
-        console.log("Product", product);
         
         if (!product) {
             req.session.cartError = "Product not found";
@@ -326,10 +323,8 @@ const addCart = async (req, res) => {
     } catch (error) {
         dbgr("🛑 Add to Cart Error:", error);
         
-        // Set error message
         req.session.cartError = "Failed to add product to cart";
         
-        // Redirect to product page or shop
         return req.query.direct ? 
             res.redirect("/products/shop") : 
             res.redirect(`/products/product/${req.params.productid || ''}`);
@@ -371,10 +366,7 @@ const deleteCart = async (req, res) => {
     } catch (error) {
         dbgr("🛑 Delete from Cart Error:", error);
         
-        // Set error message
         req.session.cartError = "Failed to remove product from cart";
-        
-        // Redirect to cart
         res.redirect("/products/cart");
     }
 };
@@ -436,10 +428,7 @@ const updateCart = async (req, res) => {
     } catch (error) {
         dbgr("🛑 Update Cart Error:", error);
         
-        // Set error message
         req.session.cartError = "Failed to update cart";
-        
-        // Redirect to cart
         res.redirect("/products/cart");
     }
 };
