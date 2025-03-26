@@ -501,11 +501,17 @@ const removeFromWishlist = async (req, res) => {
         await user.save();
 
         // Return to previous page
-        res.redirect(req.headers.referer || '/products/shop');
+        res.redirect(req.headers.referer || '/products/wishlist');
     } catch (error) {
         dbgr("🛑 Remove from Wishlist Error:", error);
         res.redirect('/products/shop');
     }
+};
+
+const wishlist = async (req, res) => {
+    const user = req.user;
+    await user.populate("wishlist.product");
+    res.render("wishlist", { user: user });
 };
 
 module.exports = {
@@ -516,5 +522,6 @@ module.exports = {
     deleteCart,
     updateCart,
     addToWishlist,
-    removeFromWishlist
+    removeFromWishlist,
+    wishlist
 };

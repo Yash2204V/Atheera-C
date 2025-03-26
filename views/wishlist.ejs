@@ -1,0 +1,73 @@
+<%- include('./partials/header') %>
+
+<div class="container py-16">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">My Wishlist</h1>
+
+    <% if (!user?.wishlist?.length) { %>
+        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+            <div class="w-24 h-24 mx-auto mb-6 text-gray-400">
+                <i class="fas fa-heart text-6xl"></i>
+            </div>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your wishlist is empty</h2>
+            <p class="text-gray-600 mb-6">Save your favorite items to your wishlist and come back to them anytime.</p>
+            <a href="/products/shop" 
+               class="inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                Start Shopping
+            </a>
+        </div>
+    <% } else { %>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <% user.wishlist.forEach(function(item) { %>
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden group">
+                    <div class="relative aspect-square">
+                        <img src="data:<%= item.product.images[0].contentType %>;base64,<%= item.product.images[0].imageBuffer.toString('base64') %>"
+                             alt="<%= item.product.title %>"
+                             class="w-full h-full object-cover transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="/products/product/<%= item.product._id %>"
+                               class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition-colors flex items-center justify-center">
+                                <i class="fas fa-search"></i>
+                            </a>
+                            <a href="/products/addtocart/<%= item.product._id %>?direct=true"
+                               class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition-colors flex items-center justify-center">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                            <a href="/products/wishlist/remove/<%= item.product._id %>"
+                               class="text-white text-lg w-9 h-9 rounded-full bg-red-500 hover:bg-red-600 transition-colors flex items-center justify-center">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 pb-3 px-4">
+                        <a href="/products/product/<%= item.product._id %>">
+                            <h4 class="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition line-clamp-1">
+                                <%= item.product.title %>
+                            </h4>
+                        </a>
+                        <div class="flex items-baseline mb-1 space-x-2">
+                            <% if (item.product.variants[0].discount) { %>
+                                <p class="text-xl text-primary font-semibold">₹<%= item.product.variants[0].discount %></p>
+                                <p class="text-sm text-gray-400 line-through">₹<%= item.product.variants[0].price %></p>
+                            <% } else { %>
+                                <p class="text-xl text-primary font-semibold">₹<%= item.product.variants[0].price %></p>
+                            <% } %>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex gap-1 text-sm text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <div class="text-xs text-gray-500 ml-3">(150)</div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('./partials/footer') %>
