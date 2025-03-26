@@ -450,12 +450,71 @@ const updateCart = async (req, res) => {
     }
 };
 
-// Export controllers
+/**
+ * Add product to wishlist
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ */
+const addToWishlist = async (req, res) => {
+    try {
+        const { productid } = req.params;
+        const user = req.user;
+
+        // Check if product exists
+        const product = await Product.findById(productid);
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        // Check if product is already in wishlist
+        const isInWishlist = user.wishlist.some(item => 
+            item.product.toString() === productid
+        );
+
+        if (!isInWishlist) {
+            user.wishlist.push({ product: productid });
+            await user.save();
+        }
+
+        // Return to previous page
+        res.redirect(req.headers.referer || '/products/shop');
+    } catch (error) {
+        dbgr("🛑 Add to Wishlist Error:", error);
+        res.redirect('/products/shop');
+    }
+};
+
+/**
+ * Remove product from wishlist
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ */
+const removeFromWishlist = async (req, res) => {
+    try {
+        const { productid } = req.params;
+        const user = req.user;
+
+        // Remove product from wishlist
+        user.wishlist = user.wishlist.filter(item => 
+            item.product.toString() !== productid
+        );
+        await user.save();
+
+        // Return to previous page
+        res.redirect(req.headers.referer || '/products/shop');
+    } catch (error) {
+        dbgr("🛑 Remove from Wishlist Error:", error);
+        res.redirect('/products/shop');
+    }
+};
+
 module.exports = {
     shop,
     product,
     cart,
     addCart,
     deleteCart,
-    updateCart
+    updateCart,
+    addToWishlist,
+    removeFromWishlist
 };

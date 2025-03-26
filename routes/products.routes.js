@@ -2,7 +2,7 @@ const express = require("express");
 const authMiddleware = require("../middlewares/auth-middleware");
 const router = express.Router();
 const mailRoute = require("./mail.routes");
-const { product, shop, cart, addCart, updateCart, deleteCart } = require("../controllers/products.controller");
+const { product, shop, cart, addCart, updateCart, deleteCart, addToWishlist, removeFromWishlist } = require("../controllers/products.controller");
 
 // 🛍️ Shop Route
 router.get("/shop", shop);
@@ -21,6 +21,10 @@ router.get("/deleted/:productid", authMiddleware, deleteCart);
 
 // 🔄 Update Cart
 router.post("/cart/update/:productid", authMiddleware, updateCart);
+
+// 💝 Wishlist Routes
+router.get("/wishlist/add/:productid", authMiddleware, addToWishlist);
+router.get("/wishlist/remove/:productid", authMiddleware, removeFromWishlist);
 
 // 📧 Enquiry Mail
 router.use("/enquiry", mailRoute);

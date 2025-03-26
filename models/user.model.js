@@ -73,6 +73,19 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
+
+  // Wishlist
+  wishlist: [{
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true
+    },
+    addedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   
   // User role
   role: { 
@@ -150,6 +163,7 @@ userSchema.virtual('cartTotal').get(function() {
  */
 userSchema.index({ role: 1 });
 userSchema.index({ 'cart.product': 1 });
+userSchema.index({ 'wishlist.product': 1 });
 
 const User = mongoose.model('User', userSchema);
 
