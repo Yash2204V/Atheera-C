@@ -49,7 +49,7 @@ const createProduct = async (req, res) => {
         };
 
         await Product.create(productData);
-        res.status(200).redirect("/admin-haha/");
+        res.status(200).redirect("/admin/");
     } catch (e) {
         console.log("ERROR", e);
         res.status(400).json({
@@ -61,7 +61,7 @@ const createProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         await Product.findOneAndDelete({ _id: req.params.productid });
-        res.redirect("/admin-haha");
+        res.redirect("/admin");
     } catch (e) {
         res.status(400).json({
             err: e.message
@@ -98,7 +98,7 @@ const editProduct = async (req, res) => {
             }
         );
         
-        res.redirect("/admin-haha");
+        res.redirect("/admin");
     } catch (e) {
         res.status(400).json({
             err: e.message

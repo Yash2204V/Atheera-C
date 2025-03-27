@@ -20,14 +20,14 @@
     </a>
 
     <nav class="w-full bg-white shadow-sm px-4 py-3">
-        <h3 class="text-xl font-bold text-gray-800">Panel-Atheera</h3>
+        <h3 class="text-xl font-bold text-gray-800">Admin Panel - "Atheera"</h3>
     </nav>
 
     <div class="flex flex-col lg:flex-row gap-6 p-4 md:p-6">
         <!-- Sidebar -->
         <div class="w-full lg:w-96 bg-white rounded-xl shadow-md p-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-800">Create New Product</h2>
-            <form autocomplete="on" action="/admin-haha/create" method="post" class="space-y-6"
+            <form autocomplete="on" action="/admin/create" method="post" class="space-y-6"
                 enctype="multipart/form-data">
                 <!-- Product Images -->
                 <div class="space-y-2">
@@ -197,7 +197,7 @@
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-800">Product Management</h2>
             </div>
-            <form action="/admin-haha" method="GET" class="mb-4 flex gap-3 items-center justify-start">
+            <form action="/admin" method="GET" class="mb-4 flex gap-3 items-center justify-start">
                 <input type="text" name="query" value="<%= searchQuery %>"
                     class="w-44 text-sm text-gray-600 px-4 py-3 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary"
                     placeholder="Search for products...">
@@ -207,7 +207,7 @@
             </form>
             <!-- Product Grid -->
             <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto">
-                <% products.forEach((product)=>{ %>
+                <% products.reverse().forEach((product)=>{ %>
                     <!-- Product Card Example -->
                     <div
                         class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
@@ -227,12 +227,12 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">₹<%=product.variants[0].price %></span>
                                 <div class="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full">
-                                    <a href="/admin-haha/delete/<%= product._id %>">
+                                    <a href="/admin/delete/<%= product._id %>">
                                         <div class="text-gray-600 hover:text-primary cursor-pointer">
                                             <i class="fas fa-trash"></i>
                                         </div>
                                     </a>
-                                    <a href="/admin-haha/edit/<%= product._id %>">
+                                    <a href="/admin/edit/<%= product._id %>">
                                         <div class="text-gray-600 hover:text-primary cursor-pointer">
                                             <i class="fas fa-edit"></i>
                                         </div>

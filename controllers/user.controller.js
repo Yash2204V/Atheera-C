@@ -8,11 +8,11 @@ const { OAuth2Client } = require("google-auth-library");
 const dbgr = require("debug")("development: user-controller");
 
 // Import config & models
-const { 
-  GOOGLE_CLIENT_ID, 
-  GOOGLE_CLIENT_SECRET, 
+const {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
   GOOGLE_CALLBACK_URL,
-  NODE_ENV 
+  NODE_ENV
 } = require("../config/environment");
 const User = require("../models/user.model");
 const verifyToken = require("../utils/verifyToken");
@@ -34,14 +34,14 @@ const authGoogle = (req, res) => {
   if (req.cookies.token) {
     return res.redirect("/");
   }
-  
+
   // Generate Google OAuth URL
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: ['profile', 'email'],
     prompt: 'consent'
   });
-  
+
   // Redirect to Google OAuth
   res.redirect(authUrl);
 };
@@ -54,24 +54,24 @@ const authGoogle = (req, res) => {
 const authGoogleCallback = async (req, res) => {
   try {
     const { code } = req.query;
-    
+
     // Exchange authorization code for tokens
     const { tokens } = await oAuth2Client.getToken(code);
     oAuth2Client.setCredentials(tokens);
-    
+
     // Fetch user profile data
     const { data } = await oAuth2Client.request({
       url: 'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses'
     });
-    
+
     // Extract user information
     const email = data.emailAddresses[0].value;
     const name = data.names[0].displayName;
     const googleId = data.resourceName.split('/')[1];
-    
+
     // Find or create user
     let user = await User.findOne({ email });
-    
+
     if (!user) {
       // Create new user
       user = new User({
@@ -84,16 +84,16 @@ const authGoogleCallback = async (req, res) => {
       if (!user.googleId) {
         user.googleId = googleId;
       }
-      
+
       // Update name if it has changed
       if (user.name !== name) {
         user.name = name;
       }
     }
-    
+
     // Generate authentication token
     const token = await user.generateAuthToken();
-    
+
     // Set JWT token in cookie
     res.cookie('token', token, {
       httpOnly: true,
@@ -101,19 +101,19 @@ const authGoogleCallback = async (req, res) => {
       maxAge: 3600000, // 1 hour
       sameSite: 'lax'
     });
-    
+
     // Redirect based on user role
     if (user.role === "admin") {
-      return res.redirect('/admin-haha');
+      return res.redirect('/admin');
     }
-    
+
     res.redirect('/');
   } catch (err) {
     dbgr('❌ Auth error:', err);
-    
+
     // Set error message in session
     req.session.authError = 'Authentication failed. Please try again.';
-    
+
     // Redirect to login with error
     res.redirect('/user/login?error=auth_failed');
   }
@@ -130,15 +130,15 @@ const loginPage = async (req, res) => {
     const user = await User.findById(verifyToken(req.cookies.token));
     return res.render("account", { name: user.name });
   }
-  
+
   // Get error messages from session
   const error = req.session.authError || '';
   const adminError = req.session.adminAuthError || '';
-  
+
   // Clear error messages
   req.session.authError = null;
   req.session.adminAuthError = null;
-  
+
   // Render login page with error messages
   res.render("login", { error, adminError });
 };
@@ -153,18 +153,27 @@ const logout = async (req, res) => {
     // Remove current token from user's tokens array
     req.user.tokens = req.user.tokens.filter(token => token.token !== req.token);
     await req.user.save();
-    
-    // Clear token cookie
-    res.clearCookie('token');
-    
-    // Redirect to home
-    res.redirect('/');
+
+    // Destroy the session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Failed to destroy session:', err);
+        return res.status(500).send('Failed to log out');
+      }
+
+      // Clear session and token cookies
+      res.clearCookie('connect.sid');
+      res.clearCookie('token');
+
+      // Redirect to home
+      res.redirect('/');
+    });
   } catch (error) {
     dbgr("❌ Logout failed:", error);
-    
+
     // Set error message in session
     req.session.authError = 'Logout failed. Please try again.';
-    
+
     // Redirect to login with error
     res.status(500).redirect('/login?error=logout_failed');
   }

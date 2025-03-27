@@ -32,45 +32,45 @@ connectionDB();
 // Initialize Express App
 const app = express();
 
-// Security Headers Middleware with optimized CSP
+// Security Headers Middleware
 if (NODE_ENV === 'production') {
-    app.use(helmet({
-        contentSecurityPolicy: {
-            useDefaults: true,
-            directives: {
-                "default-src": ["'self'"],
-                "script-src": ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
-                "style-src": ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
-                "img-src": ["'self'", "data:", "https://img.icons8.com"],
-                "font-src": ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
-                "object-src": ["'none'"],
-                "upgrade-insecure-requests": []
-            }
-        },
-        frameguard: { action: 'sameorigin' },
-        dnsPrefetchControl: { allow: true }
-    }));
+  app.use(helmet({
+      contentSecurityPolicy: {
+          directives: {
+              defaultSrc: ["'self'"],
+
+              // ✅ Allow external scripts (No inline scripts)
+              scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"], 
+
+              // ✅ Allow Tailwind & external styles (inline styles needed for Tailwind)
+              styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
+
+              // ✅ Allow images from self, data URIs, and external icon sources
+              imgSrc: ["'self'", "data:", "https://img.icons8.com"],
+
+              // ✅ Allow fonts from Google Fonts and CDNs
+              fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
+
+              // ✅ Other security settings
+              objectSrc: ["'none'"], // Prevents loading objects like Flash, etc.
+              upgradeInsecureRequests: [],
+          }
+      },
+      frameguard: { action: 'sameorigin' }
+  }));
 } else {
-    app.use(helmet({
-        contentSecurityPolicy: false
-    }));
+  // In development, disable CSP for easy debugging
+  app.use(helmet({
+      contentSecurityPolicy: false
+  }));
 }
 
 // Compression Middleware with optimized settings
-app.use(compression({
-    level: 6,
-    threshold: 10 * 1024, // Only compress responses above 10KB
-    filter: (req, res) => {
-        if (req.headers['x-no-compression']) {
-            return false;
-        }
-        return compression.filter(req, res);
-    }
-}));
+app.use(compression());
 
 // Request Parsing Middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Session Configuration with optimized settings
@@ -94,12 +94,14 @@ app.use(session({
   }
 }));
 
+
 // Static Files & View Engine with caching
 const staticOptions = {
-  maxAge: NODE_ENV === 'production' ? '7d' : 0,
+  maxAge: NODE_ENV === 'production' ? '30d' : 0,
   etag: true,
   lastModified: true
 };
+
 app.use(express.static(path.join(__dirname, "public"), staticOptions));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -107,7 +109,7 @@ app.set("views", path.join(__dirname, "views"));
 // Request Logging in Development
 if (NODE_ENV !== 'production') {
   const morgan = require('morgan');
-  app.use(morgan('dev'));
+  app.use(morgan('tiny')); // Less verbose logging
 }
 
 // Authentication Middleware
@@ -122,7 +124,6 @@ const accountRoute = require("./routes/account.routes");
 
 // Home Route with caching
 app.get("/", (req, res) => {
-  res.set('Cache-Control', 'public, max-age=300'); // 5 minutes cache
   res.render("index");
 });
 
@@ -130,7 +131,7 @@ app.get("/", (req, res) => {
 app.use("/user", userRoute);
 app.use("/products", productsRoute);
 app.use("/account", accountRoute);
-app.use("/admin-haha", adminRoute);
+app.use("/admin", adminRoute);
 
 // 404 Handler
 app.use((req, res, next) => {
