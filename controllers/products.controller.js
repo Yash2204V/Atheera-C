@@ -22,6 +22,7 @@ const shop = async (req, res) => {
             page = 1,
             category = '',
             subCategory = '',
+            subSubCategory = '',
             minPrice = '',
             maxPrice = ''
         } = req.query;
@@ -33,23 +34,25 @@ const shop = async (req, res) => {
         const order = sortOrder === 'desc' ? -1 : 1;
 
         // Build search criteria
-        const searchCriteria = {
-            $or: [
+        const searchCriteria = {};
+
+        // If we have both subCategory and subSubCategory, use them together
+        if (subCategory && subSubCategory) {
+            searchCriteria.subCategory = subCategory;
+            searchCriteria.subSubCategory = subSubCategory;
+        }
+        // If we only have category, use it
+        else if (category) {
+            searchCriteria.category = category;
+        }
+        // If we have a general search query
+        else if (query) {
+            searchCriteria.$or = [
                 { title: { $regex: query, $options: 'i' } },
                 { category: { $regex: query, $options: 'i' } },
                 { subCategory: { $regex: query, $options: 'i' } },
                 { subSubCategory: { $regex: query, $options: 'i' } }
-            ]
-        };
-        
-        // Add category filter if provided
-        if (category) {
-            searchCriteria.category = category;
-        }
-        
-        // Add subcategory filter if provided
-        if (subCategory) {
-            searchCriteria.subCategory = subCategory;
+            ];
         }
         
         // Add price range filter if provided
@@ -84,6 +87,7 @@ const shop = async (req, res) => {
             sortOrder,
             category,
             subCategory,
+            subSubCategory,
             minPrice,
             maxPrice,
             pagination: {
