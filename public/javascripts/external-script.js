@@ -8,7 +8,6 @@ const filterOverlay = document.getElementById('filter-overlay');
 const closeFilter = document.getElementById('close-filter');
 
 
-
 if (enquiryBtnSing) {
     enquiryBtnSing.addEventListener("click", () => {
         const id = enquiryBtnSing.getAttribute("data-value");
@@ -103,17 +102,3 @@ if(mainImg && imgBars){
         }
     }
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const scrollPosition = localStorage.getItem("scrollPosition");
-    if (scrollPosition) {
-        window.scrollTo(0, parseInt(scrollPosition, 10));
-    }
-    const saveScrollPosition = () => {
-        localStorage.setItem("scrollPosition", window.scrollY);
-    };
-
-    window.addEventListener("beforeunload", saveScrollPosition);
-    return () => window.removeEventListener("beforeunload", saveScrollPosition);
-});
