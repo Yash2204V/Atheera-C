@@ -172,14 +172,14 @@ productSchema.virtual('totalStock').get(function () {
  */
 productSchema.pre("validate", function (next) {
     const validSubCategories = {
-        clothing: ["suit", "saree", "kurti", "leggings"],
+        clothing: ["suit", "saree", "kurti", "bottomwear"],
     };
 
     const validSubSubCategories = {
         suit: ["ethnic", "partywear", "lehenga", "regular"],
         saree: ["ethnic", "partywear", "regular"],
         kurti: ["ethnic", "short", "regular"],
-        leggings: ["casual", "ethnic", "regular", "printed"]
+        bottomwear: ["casual", "nightwear", "sports"]
     };
 
     // Validate subCategory
