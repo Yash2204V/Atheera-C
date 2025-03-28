@@ -3,7 +3,6 @@
  * Handles email sending for product enquiries
  */
 
-// Import required modules
 const Product = require("../models/product.model");
 const transporter = require("../utils/transporter");
 const dbgr = require("debug")("development: mail-controller");
@@ -22,6 +21,9 @@ const singleProductMail = async (req, res) => {
     const { productid } = req.params;
     const user = req.user;
     const phoneNumber = req.query.query || "N/A";
+    const variant = req.query.variant || "N/A";
+    console.log("QUERY:", req.query);
+    
 
     // Validate inputs
     if (!productid) {
@@ -39,74 +41,86 @@ const singleProductMail = async (req, res) => {
     }
 
     // Get variant details
-    const variant = product.variants[0] || {};
-    const modelNo = variant.modelno || "N/A";
-    const price = variant.price || "N/A";
-    const discountPrice = variant.discount || "N/A";
+    const variantDetails = product.variants.find(v => v.size === variant) || product.variants[0];
+    
+    if (!variantDetails) {
+      return res.status(404).json({ message: "Variant not found" });
+    }
+    const effectivePrice = variantDetails.discount || variantDetails.price;
+    const formattedDate = new Date().toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
 
     // Create email content
     const emailContent = {
       from: `ATHEERA 👗🥻 <${EMAIL}>`,
       to: EMAIL,
-      subject: "Single Product Enquiry",
+      subject: `Product Enquiry - ${product.title} (SKU: ${variantDetails.modelno})`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-          <h1 style="color: #444c34; border-bottom: 2px solid #444c34; padding-bottom: 10px;">Product Enquiry</h1>
+          <h1 style="color: #444c34; border-bottom: 2px solid #444c34; padding-bottom: 10px;">Product Enquiry Details</h1>
           
-          <h2 style="color: #34455d; margin-top: 20px;">User Details</h2>
-          <table style="width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0;">
+          <h2 style="color: #34455d; margin-top: 20px;">Customer Information</h2>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Name:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${user.name}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Name:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${user.name}</td>
             </tr>
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Email:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${user.email}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Email:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${user.email}</td>
             </tr>
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Phone No:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${phoneNumber}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Phone:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${phoneNumber}</td>
             </tr>
           </table>
 
-          <h2 style="color: #34455d; margin-top: 20px;">Product Details</h2>
-          <table style="width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0;">
+          <h2 style="color: #34455d; margin-top: 20px;">Product Information</h2>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>ID:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${product._id}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>SKU/Model No:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${variantDetails.modelno}</td>
             </tr>
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Title:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.title}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Title:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.title}</td>
             </tr>
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Model:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${modelNo}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Category:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.category} › ${product.subCategory} › ${product.subSubCategory}</td>
             </tr>
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Category:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.category}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Size:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${variantDetails.size}</td>
             </tr>
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Sub Category:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.subCategory}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Original Price:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">₹${variantDetails.price}</td>
             </tr>
+            ${variantDetails.discount ? `
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Sub Sub Category:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.subSubCategory}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Discount:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">₹${variantDetails.price - variantDetails.discount}</td>
             </tr>
+            ` : ''}
             <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Price:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">₹${price}</td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Final Price:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; font-weight: bold; color: #d84126;">₹${effectivePrice}</td>
             </tr>
-            ${discountPrice !== "N/A" ? `
-            <tr>
-              <td style="border: 1px solid #e0e0e0; padding: 8px; background-color: #f9f9f9;"><strong>Discount Price:</strong></td>
-              <td style="border: 1px solid #e0e0e0; padding: 8px;">₹${discountPrice}</td>
-            </tr>` : ''}
           </table>
-          
-          <p style="margin-top: 20px; color: #666;">This enquiry was sent on ${new Date().toLocaleString()}</p>
+
+          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 20px;">
+            <p style="margin: 0; color: #666;">
+              <strong>Enquiry Date:</strong> ${formattedDate}
+            </p>
+          </div>
         </div>
       `,
     };
@@ -137,6 +151,7 @@ const singleProductMail = async (req, res) => {
 };
 
 /**
+/**
  * Multiple Products Enquiry Mail
  * Sends an email with details about multiple products in the cart
  * @param {Request} req - Express request object
@@ -164,18 +179,21 @@ const multipleProductMail = async (req, res) => {
         if (!product) return null;
 
         const variant = product.variants.find(v => v.size === cartItem.size) || product.variants[0];
+        const finalPrice = variant.discount || variant.price;
 
         return {
           id: product._id,
           title: product.title,
           quantity: cartItem.quantity,
           size: cartItem.size,
-          model: variant?.modelno || "N/A",
+          modelNo: variant?.modelno || "N/A",
           category: product.category,
           subCategory: product.subCategory,
           subSubCategory: product.subSubCategory,
-          price: variant?.price || "N/A",
-          discount: variant?.discount || "N/A"
+          originalPrice: variant?.price || "N/A",
+          finalPrice: finalPrice,
+          totalPrice: finalPrice * cartItem.quantity,
+          createdAt: new Date(product.createdAt).toLocaleString()
         };
       })
     );
@@ -189,46 +207,76 @@ const multipleProductMail = async (req, res) => {
     }
 
     // Calculate total price
-    const totalPrice = validProducts.reduce((sum, product) => {
-      const price = product.discount !== "N/A" ? product.discount : product.price;
-      return sum + (price !== "N/A" ? price * product.quantity : 0);
-    }, 0);
+    const totalPrice = validProducts.reduce((sum, product) => sum + product.totalPrice, 0);
 
-    // Create email content
-    let productTableRows = validProducts.map(product => `
+    // Create product table rows
+    const productRows = validProducts.map(product => `
       <tr>
-        <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.title}</td>
-        <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.quantity}</td>
-        <td style="border: 1px solid #e0e0e0; padding: 8px;">${product.size}</td>
-        <td style="border: 1px solid #e0e0e0; padding: 8px;">₹${product.price}</td>
-        <td style="border: 1px solid #e0e0e0; padding: 8px;">₹${product.discount}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.id}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.title}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.modelNo}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.category} › ${product.subCategory} › ${product.subSubCategory}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.size}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.quantity}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">₹${product.finalPrice}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">₹${product.totalPrice}</td>
+        <td style="padding: 8px; border: 1px solid #e0e0e0;">${product.createdAt}</td>
       </tr>
     `).join('');
 
     const emailContent = {
       from: `ATHEERA 👗🥻 <${EMAIL}>`,
       to: EMAIL,
-      subject: "Multiple Products Enquiry",
+      subject: "New Cart Enquiry",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e0e0e0;">
-          <h1>Cart Enquiry</h1>
-          <h2>User Details</h2>
-          <p><strong>Name:</strong> ${user.name}</p>
-          <p><strong>Email:</strong> ${user.email}</p>
-          <p><strong>Phone No:</strong> ${phoneNumber}</p>
-          <h2>Product Details</h2>
-          <table style="width: 100%; border-collapse: collapse;">
+        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <h1 style="color: #d84126; border-bottom: 2px solid #d84126; padding-bottom: 10px;">Cart Enquiry Details</h1>
+          
+          <h2 style="color: #34455d; margin-top: 20px;">Customer Information</h2>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
-              <th style="border: 1px solid #e0e0e0; padding: 8px;">Title</th>
-              <th style="border: 1px solid #e0e0e0; padding: 8px;">Quantity</th>
-              <th style="border: 1px solid #e0e0e0; padding: 8px;">Size</th>
-              <th style="border: 1px solid #e0e0e0; padding: 8px;">Price</th>
-              <th style="border: 1px solid #e0e0e0; padding: 8px;">Discount</th>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Name:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${user.name}</td>
             </tr>
-            ${productTableRows}
+            <tr>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Email:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${user.email}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Phone:</strong></td>
+              <td style="padding: 8px; border: 1px solid #e0e0e0;">${phoneNumber}</td>
+            </tr>
           </table>
-          <h3>Total Price: ₹${totalPrice}</h3>
-          <p>Enquiry sent on ${new Date().toLocaleString()}</p>
+
+          <h2 style="color: #34455d;">Product Details</h2>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
+              <thead>
+                <tr style="background-color: #f9f9f9;">
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">ID</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Title</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Model No</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Category</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Size</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Quantity</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Unit Price</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Total</th>
+                  <th style="padding: 8px; border: 1px solid #e0e0e0;">Created Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${productRows}
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top: 20px; text-align: right; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+            <h3 style="color: #34455d; margin: 0;">Total Order Value: <span style="color: #d84126;">₹${totalPrice}</span></h3>
+          </div>
+          
+          <p style="margin-top: 20px; color: #666; font-style: italic;">
+            Enquiry received on ${new Date().toLocaleString()}
+          </p>
         </div>
       `,
     };

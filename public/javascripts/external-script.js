@@ -13,7 +13,10 @@ if (enquiryBtnSing) {
         const id = enquiryBtnSing.getAttribute("data-value");
         const userInput = prompt('Please enter your number & proceed:');
         if (userInput) {
-            window.location.href = `/products/enquiry/single/${id}?query=` + encodeURIComponent(userInput);
+            const variant = prompt('Enter Available Size: (XS, S, M, L, XL, XXL, XXXL)');
+            if (variant) {
+                window.location.href = `/products/enquiry/single/${id}?query=` + encodeURIComponent(userInput) + `&variant=` + encodeURIComponent(variant);
+            }
         }
     });
 }
@@ -86,7 +89,7 @@ if (filterToggle && filterSidebar && filterOverlay) {
 let mainImg = document.getElementById('main-img')
 let imgBars = document.getElementsByClassName('single-img')
 
-if(mainImg && imgBars){
+if (mainImg && imgBars) {
     for (let imgBar of imgBars) {
         imgBar.addEventListener('click', function () {
             clearActive()
@@ -95,10 +98,36 @@ if(mainImg && imgBars){
             this.classList.add('border-primary')
         })
     }
-    
+
     function clearActive() {
         for (let imgBar of imgBars) {
             imgBar.classList.remove('border-primary')
         }
     }
 }
+
+// Quantity input handling
+document.addEventListener('DOMContentLoaded', function () {
+    const quantityInput = document.querySelector('input[name="quantity"]');
+    const decrementBtn = document.querySelector('[data-action="decrement"]');
+    const incrementBtn = document.querySelector('[data-action="increment"]');
+
+    if (quantityInput && decrementBtn && incrementBtn) {
+        function updateQuantity(newValue) {
+            const value = Math.min(Math.max(parseInt(newValue) || 1, 1), 10);
+            quantityInput.value = value;
+        }
+
+        decrementBtn.addEventListener('click', () => {
+            updateQuantity(parseInt(quantityInput.value) - 1);
+        });
+
+        incrementBtn.addEventListener('click', () => {
+            updateQuantity(parseInt(quantityInput.value) + 1);
+        });
+
+        quantityInput.addEventListener('change', (e) => {
+            updateQuantity(e.target.value);
+        });
+    }
+});

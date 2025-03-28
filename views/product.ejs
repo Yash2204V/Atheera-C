@@ -234,32 +234,6 @@
         </div>
     </div>
 
-    <script>
-        // Quantity input handling
-        document.addEventListener('DOMContentLoaded', function() {
-            const quantityInput = document.querySelector('input[name="quantity"]');
-            const decrementBtn = document.querySelector('[data-action="decrement"]');
-            const incrementBtn = document.querySelector('[data-action="increment"]');
-
-            function updateQuantity(newValue) {
-                const value = Math.min(Math.max(parseInt(newValue) || 1, 1), 10);
-                quantityInput.value = value;
-            }
-
-            decrementBtn.addEventListener('click', () => {
-                updateQuantity(parseInt(quantityInput.value) - 1);
-            });
-
-            incrementBtn.addEventListener('click', () => {
-                updateQuantity(parseInt(quantityInput.value) + 1);
-            });
-
-            quantityInput.addEventListener('change', (e) => {
-                updateQuantity(e.target.value);
-            });
-        });
-    </script>
-
     <script src="/javascripts/external-script.js"></script>
 
 <%- include('./partials/footer') %>
