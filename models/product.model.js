@@ -172,14 +172,15 @@ productSchema.virtual('totalStock').get(function () {
  */
 productSchema.pre("validate", function (next) {
     const validSubCategories = {
-        clothing: ["suit", "saree", "kurti", "bottomwear"],
+        clothing: ["suit", "saree", "kurti", "bottomwear", "others"],
     };
 
     const validSubSubCategories = {
         suit: ["ethnic", "partywear", "lehenga", "regular"],
         saree: ["ethnic", "partywear", "regular"],
         kurti: ["ethnic", "short", "regular"],
-        bottomwear: ["casual", "nightwear", "sports"]
+        bottomwear: ["casual", "nightwear", "sports"],
+        others: ["cordset", "nightwear", "sports"]
     };
 
     // Validate subCategory

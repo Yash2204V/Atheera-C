@@ -71,6 +71,7 @@
                                 <option value="saree" <%= product.subCategory === 'saree' ? 'selected' : '' %>>Saree</option>
                                 <option value="kurti" <%= product.subCategory === 'kurti' ? 'selected' : '' %>>Kurti</option>
                                 <option value="bottomwear" <%= product.subCategory === 'bottomwear' ? 'selected' : '' %>>Bottom-Wear</option>
+                                <option value="others" <%= product.subCategory === 'others' ? 'selected' : '' %>>Others</option>
                             </select>
                         </div>
 
@@ -94,7 +95,12 @@
                                 <option value="regular" <%= product.subSubCategory === 'regular' ? 'selected' : '' %>>Regular</option>
                                 <option class="font-extrabold" value="bottomwear"><b>Bottom-Wear</b></option>
                                 <option value="casual" <%= product.subSubCategory === 'casual' ? 'selected' : '' %>>Casual</option>
-                                <option value="nightwear" <%= product.subSubCategory === 'nightwear' ? 'selected' : '' %>>Night-Wear</option>
+                                <option value="ethnic" <%= product.subSubCategory === 'ethnic' ? 'selected' : '' %>>Ethnic</option>
+                                <option value="regular" <%= product.subSubCategory === 'regular' ? 'selected' : '' %>>Regular</option>
+                                <option value="printed" <%= product.subSubCategory === 'printed' ? 'selected' : '' %>>Printed</option>
+                                <option class="font-extrabold" value="others"><b>Others</b></option>
+                                <option value="cordset" <%= product.subSubCategory === 'cordset' ? 'selected' : '' %>>CordSet</option>
+                                <option value="nightwear" <%= product.subSubCategory === 'nightwear' ? 'selected' : '' %>>NightWear</option>
                                 <option value="sports" <%= product.subSubCategory === 'sports' ? 'selected' : '' %>>Sports</option>
                             </select>
                         </div>

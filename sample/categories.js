@@ -3,7 +3,8 @@ const Category = {
         suit: ["ethnic", "partywear", "lehenga", "regular"],
         saree: ["ethnic", "partywear", "regular"],
         kurti: ["ethnic", "short", "regular"],
-        bottomwear: ["casual", "nightwear", "sports"]
+        bottomwear: ["casual", "ethnic", "regular", "printed"],
+        others: ["cordset", "nightwear", "sports"]
     }
 };
 
