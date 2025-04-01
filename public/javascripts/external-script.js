@@ -11,8 +11,6 @@ if (enquiryBtnSing) {
     enquiryBtnSing.addEventListener("click", () => {
         const id = enquiryBtnSing.getAttribute("data-value");
         const products = enquiryBtnSing.getAttribute("data-product");
-        console.log(products);
-        
         
         // Extract available sizes
         const sizeRegex = /size:\s*'([^']*)'/g;
@@ -23,14 +21,13 @@ if (enquiryBtnSing) {
         }
         const uniqueSizes = [...new Set(sizes)];
         const availableSizesStr = uniqueSizes.join(', ');
-        console.log(availableSizesStr);
 
         // Get user input
-        const userInput = prompt('Please enter your phone number & proceed: (eg. +91-9876543210)');
+        const userInput = prompt('Enter your phone number (e.g., +91-9876543210):')?.trim();
         if (!userInput) return;
 
         // Get size with validation
-        const variant = prompt(`Enter Available Size (${availableSizesStr}):`);
+        const variant = prompt(`Enter Available Size (${availableSizesStr}):`)?.trim();
         if (!variant) return;
 
         // Validate size
