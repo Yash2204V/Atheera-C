@@ -11,20 +11,61 @@ const closeFilter = document.getElementById('close-filter');
 if (enquiryBtnSing) {
     enquiryBtnSing.addEventListener("click", () => {
         const id = enquiryBtnSing.getAttribute("data-value");
-        const userInput = prompt('Please enter your number & proceed:');
-        if (userInput) {
-            const variant = prompt('Enter Available Size: (XS, S, M, L, XL, XXL, XXXL)');
-            if (variant) {
-                window.location.href = `/products/enquiry/single/${id}?query=` + encodeURIComponent(userInput) + `&variant=` + encodeURIComponent(variant);
-            }
+        const products = enquiryBtnSing.getAttribute("data-product");
+
+        // Extract available sizes
+        const sizeRegex = /size:\s*'([^']*)'/g;
+        const sizes = [];
+        let match;
+        while ((match = sizeRegex.exec(products)) !== null) {
+            sizes.push(match[1]);
+        }
+        const uniqueSizes = [...new Set(sizes)];
+        const availableSizesStr = uniqueSizes.join(', ');
+
+        // Get user input
+        const userInput = prompt('Please enter your phone number & proceed: (eg. +91-9876543210)');
+        if (!userInput) return;
+
+        // Get size with validation
+        const variant = prompt(`Enter Available Size (${availableSizesStr}):`);
+        if (!variant) return;
+
+        // Validate size
+        if (!uniqueSizes.includes(variant.toUpperCase())) {
+            return alert(`Invalid size! Available sizes: ${availableSizesStr}`);
+        }
+
+        // Final confirmation
+        const isConfirmed = confirm(
+            `Please confirm your details:\n\n` +
+            `Phone Number: ${userInput}\n` +
+            `Selected Size: ${variant}\n\n` +
+            `Is this information correct?`
+        );
+
+        if (isConfirmed) {
+            window.location.href = `/products/enquiry/single/${id}?query=` +
+                encodeURIComponent(userInput) +
+                `&variant=` +
+                encodeURIComponent(variant);
+        } else {
+            alert('Submission canceled. Please try again with correct details.');
         }
     });
 }
 
 if (enquiryBtnMulti) {
     enquiryBtnMulti.addEventListener("click", () => {
-        const userInput = prompt('Please enter your number & proceed:');
-        if (userInput) {
+        const userInput = prompt('Please enter your phone number & proceed: (eg. +91-9876543210)');
+        if(!userInput) return;
+        // Final confirmation
+        const isConfirmed = confirm(
+            `Please confirm your details:\n\n` +
+            `Phone Number: ${userInput}\n` +
+            `Is this information correct?`
+        );
+        if (isConfirmed) {
             window.location.href = `/products/enquiry/multiple?query=` + encodeURIComponent(userInput);
         }
     });
@@ -84,7 +125,6 @@ if (filterToggle && filterSidebar && filterOverlay) {
     });
 }
 
-// -----------------------------------------------------------------------------
 
 let mainImg = document.getElementById('main-img')
 let imgBars = document.getElementsByClassName('single-img')

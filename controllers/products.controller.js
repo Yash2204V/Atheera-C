@@ -70,7 +70,6 @@ const shop = async (req, res) => {
             .sort({ [sortBy]: order })
             .limit(DEFAULT_LIMIT * pageNum);
 
-
         // Render shop page with data
         res.render("shop", {
             Category,
@@ -94,9 +93,7 @@ const shop = async (req, res) => {
         });
     } catch (error) {
         dbgr("🛑 Shop Error:", error);
-
-        req.session.shopError = "Failed to load products. Please try again.";
-
+        req.flash('error', 'Failed to load products. Please try again.');
         res.status(500).render("shop", {
             Category,
             products: [],
@@ -104,8 +101,7 @@ const shop = async (req, res) => {
             searchQuery: '',
             totalProducts: 0,
             sortBy: 'createdAt',
-            sortOrder: 'desc',
-            error: error.message
+            sortOrder: 'desc'
         });
     }
 };
@@ -121,6 +117,7 @@ const product = async (req, res) => {
         const product = await Product.findById(req.params.id);
 
         if (!product) {
+            req.flash('error', 'Product not found');
             return res.status(404).render("error", {
                 message: "Product not found",
                 error: { status: 404 }
@@ -133,14 +130,6 @@ const product = async (req, res) => {
             category: product.category,
             subCategory: product.subCategory
         }).limit(4);
-
-        // Get success/error messages from session
-        const success = req.session.enquirySuccess || '';
-        const error = req.session.enquiryError || '';
-
-        // Clear session messages
-        req.session.enquirySuccess = null;
-        req.session.enquiryError = null;
 
         // Get user's cart item if exists
         let cartItem = null;
@@ -156,13 +145,11 @@ const product = async (req, res) => {
         res.render("product", {
             product,
             relatedProducts,
-            success,
-            error,
             cartItem
         });
     } catch (error) {
         dbgr("🛑 Product Fetch Error:", error);
-
+        req.flash('error', 'Error loading product');
         res.status(500).render("error", {
             message: "Error loading product",
             error: { status: 500 }
@@ -206,16 +193,6 @@ const cart = async (req, res) => {
 
         const finalTotal = totalPrice;
 
-        // Get success/error messages from session
-        const success = req.session.cartSuccess || req.session.enquirySuccess || '';
-        const error = req.session.cartError || req.session.enquiryError || '';
-
-        // Clear session messages
-        req.session.cartSuccess = null;
-        req.session.cartError = null;
-        req.session.enquirySuccess = null;
-        req.session.enquiryError = null;
-
         // Render cart page
         res.render("cart", {
             user: user || "",
@@ -223,21 +200,18 @@ const cart = async (req, res) => {
                 subtotal,
                 discount: totalDiscount,
                 total: finalTotal
-            },
-            success,
-            error
+            }
         });
     } catch (error) {
         dbgr("🛑 Cart Error:", error);
-
+        req.flash('error', 'Failed to load cart');
         res.status(500).render("cart", {
             user: req.user || "",
             cartSummary: {
                 subtotal: 0,
                 discount: 0,
                 total: 0
-            },
-            error: "Failed to load cart"
+            }
         });
     }
 };
@@ -255,11 +229,12 @@ const addCart = async (req, res) => {
 
         // Validate inputs
         if (!user) {
+            req.flash('error', 'Please login to add items to cart');
             return res.status(404).json({ error: "User not found" });
         }
 
         if (!productid) {
-            req.session.cartError = "Invalid product";
+            req.flash('error', 'Invalid product');
             return res.redirect("/products/cart");
         }
 
@@ -267,7 +242,7 @@ const addCart = async (req, res) => {
         const product = await Product.findById(productid);
 
         if (!product) {
-            req.session.cartError = "Product not found";
+            req.flash('error', 'Product not found');
             return res.redirect("/products/cart");
         }
 
@@ -277,7 +252,7 @@ const addCart = async (req, res) => {
         const selectedVariant = product.variants.find(v => v.size === size);
 
         if (!selectedVariant) {
-            req.session.cartError = "Selected size not available";
+            req.flash('error', 'Selected size not available');
             return direct ?
                 res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) :
                 res.redirect(`/products/product/${productid}`);
@@ -285,7 +260,7 @@ const addCart = async (req, res) => {
 
         // Check if variant has stock
         if (selectedVariant.quantity < parseInt(quantity)) {
-            req.session.cartError = `Only ${selectedVariant.quantity} items available in size ${size}`;
+            req.flash('error', `Only ${selectedVariant.quantity} items available in size ${size}`);
             return direct ?
                 res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) :
                 res.redirect(`/products/product/${productid}`);
@@ -303,7 +278,7 @@ const addCart = async (req, res) => {
 
             // Check if new quantity exceeds stock
             if (newQuantity > selectedVariant.quantity) {
-                req.session.cartError = `Cannot add more than ${selectedVariant.quantity} items of this size`;
+                req.flash('error', `Cannot add more than ${selectedVariant.quantity} items of this size`);
                 return direct ?
                     res.redirect(`/products/shop?query=${subSubCategory || subCategory || category}`) :
                     res.redirect(`/products/product/${productid}`);
@@ -323,8 +298,7 @@ const addCart = async (req, res) => {
         // Save user cart
         await user.save();
 
-        // Set success message
-        req.session.cartSuccess = "Product added to cart";
+        req.flash('success', 'Product added to cart successfully');
 
         // Redirect based on source
         return direct ?
@@ -332,9 +306,7 @@ const addCart = async (req, res) => {
             res.redirect(`/products/product/${productid}`);
     } catch (error) {
         dbgr("🛑 Add to Cart Error:", error);
-
-        req.session.cartError = "Failed to add product to cart";
-
+        req.flash('error', 'Failed to add product to cart');
         return req.query.direct ?
             res.redirect("/products/shop") :
             res.redirect(`/products/product/${req.params.productid || ''}`);
@@ -353,6 +325,7 @@ const deleteCart = async (req, res) => {
 
         // Validate user
         if (!user) {
+            req.flash('error', 'User not found');
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -360,7 +333,7 @@ const deleteCart = async (req, res) => {
         const cartItemIndex = user.cart.findIndex(item => item.product.toString() === productid);
 
         if (cartItemIndex === -1) {
-            req.session.cartError = "Product not found in cart";
+            req.flash('error', 'Product not found in cart');
             return res.redirect("/products/cart");
         }
 
@@ -368,15 +341,11 @@ const deleteCart = async (req, res) => {
         user.cart.splice(cartItemIndex, 1);
         await user.save();
 
-        // Set success message
-        req.session.cartSuccess = "Product removed from cart";
-
-        // Redirect to cart
+        req.flash('success', 'Product removed from cart');
         res.redirect("/products/cart");
     } catch (error) {
         dbgr("🛑 Delete from Cart Error:", error);
-
-        req.session.cartError = "Failed to remove product from cart";
+        req.flash('error', 'Failed to remove product from cart');
         res.redirect("/products/cart");
     }
 };
@@ -394,6 +363,7 @@ const updateCart = async (req, res) => {
 
         // Validate user
         if (!user) {
+            req.flash('error', 'User not found');
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -401,7 +371,7 @@ const updateCart = async (req, res) => {
         const cartItem = user.cart.find(item => item.product.toString() === productid);
 
         if (!cartItem) {
-            req.session.cartError = "Product not found in cart";
+            req.flash('error', 'Product not found in cart');
             return res.redirect("/products/cart");
         }
 
@@ -409,7 +379,7 @@ const updateCart = async (req, res) => {
         const product = await Product.findById(productid);
 
         if (!product) {
-            req.session.cartError = "Product not found";
+            req.flash('error', 'Product not found');
             return res.redirect("/products/cart");
         }
 
@@ -417,13 +387,13 @@ const updateCart = async (req, res) => {
         const selectedVariant = product.variants.find(v => v.size === size);
 
         if (!selectedVariant) {
-            req.session.cartError = "Selected size not available";
+            req.flash('error', 'Selected size not available');
             return res.redirect("/products/cart");
         }
 
         // Check if variant has stock
         if (selectedVariant.quantity < parseInt(quantity)) {
-            req.session.cartError = `Only ${selectedVariant.quantity} items available in size ${size}`;
+            req.flash('error', `Only ${selectedVariant.quantity} items available in size ${size}`);
             return res.redirect("/products/cart");
         }
 
@@ -435,15 +405,11 @@ const updateCart = async (req, res) => {
         // Save user cart
         await user.save();
 
-        // Set success message
-        req.session.cartSuccess = "Cart updated successfully";
-
-        // Redirect to cart
+        req.flash('success', 'Cart updated successfully');
         res.redirect("/products/cart");
     } catch (error) {
         dbgr("🛑 Update Cart Error:", error);
-
-        req.session.cartError = "Failed to update cart";
+        req.flash('error', 'Failed to update cart');
         res.redirect("/products/cart");
     }
 };
@@ -461,6 +427,7 @@ const addToWishlist = async (req, res) => {
         // Check if product exists
         const product = await Product.findById(productid);
         if (!product) {
+            req.flash('error', 'Product not found');
             return res.status(404).json({ error: "Product not found" });
         }
 
@@ -472,12 +439,16 @@ const addToWishlist = async (req, res) => {
         if (!isInWishlist) {
             user.wishlist.push({ product: productid });
             await user.save();
+            req.flash('success', 'Product added to wishlist');
+        } else {
+            req.flash('info', 'Product is already in your wishlist');
         }
 
         // Return to previous page
         res.redirect(req.headers.referer || '/products/shop');
     } catch (error) {
         dbgr("🛑 Add to Wishlist Error:", error);
+        req.flash('error', 'Failed to add product to wishlist');
         res.redirect('/products/shop');
     }
 };
@@ -498,10 +469,12 @@ const removeFromWishlist = async (req, res) => {
         );
         await user.save();
 
+        req.flash('success', 'Product removed from wishlist');
         // Return to previous page
         res.redirect(req.headers.referer || '/products/wishlist');
     } catch (error) {
         dbgr("🛑 Remove from Wishlist Error:", error);
+        req.flash('error', 'Failed to remove product from wishlist');
         res.redirect('/products/shop');
     }
 };

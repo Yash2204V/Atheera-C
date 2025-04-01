@@ -79,6 +79,7 @@ const authGoogleCallback = async (req, res) => {
         name,
         email
       });
+      req.flash('success', 'Welcome to Atheera! Your account has been created successfully.');
     } else {
       // Update existing user's Google ID if not set
       if (!user.googleId) {
@@ -89,6 +90,7 @@ const authGoogleCallback = async (req, res) => {
       if (user.name !== name) {
         user.name = name;
       }
+      req.flash('success', 'Welcome back to Atheera!');
     }
 
     // Generate authentication token
@@ -110,12 +112,8 @@ const authGoogleCallback = async (req, res) => {
     res.redirect('/');
   } catch (err) {
     dbgr('❌ Auth error:', err);
-
-    // Set error message in session
-    req.session.authError = 'Authentication failed. Please try again.';
-
-    // Redirect to login with error
-    res.redirect('/user/login?error=auth_failed');
+    req.flash('error', 'Authentication failed. Please try again.');
+    res.redirect('/user/login');
   }
 };
 
@@ -131,16 +129,7 @@ const loginPage = async (req, res) => {
     return res.render("account", { name: user.name });
   }
 
-  // Get error messages from session
-  const error = req.session.authError || '';
-  const adminError = req.session.adminAuthError || '';
-
-  // Clear error messages
-  req.session.authError = null;
-  req.session.adminAuthError = null;
-
-  // Render login page with error messages
-  res.render("login", { error, adminError });
+  res.render("login");
 };
 
 /**
@@ -164,18 +153,13 @@ const logout = async (req, res) => {
       // Clear session and token cookies
       res.clearCookie('connect.sid');
       res.clearCookie('token');
-
       // Redirect to home
       res.redirect('/');
     });
   } catch (error) {
     dbgr("❌ Logout failed:", error);
-
-    // Set error message in session
-    req.session.authError = 'Logout failed. Please try again.';
-
-    // Redirect to login with error
-    res.status(500).redirect('/login?error=logout_failed');
+    req.flash('error', 'Logout failed. Please try again.');
+    res.status(500).redirect('/login');
   }
 };
 

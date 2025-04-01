@@ -1,5 +1,6 @@
-<%- include('./partials/header') %>
+<%- include('./partials/success-error') %>
 
+<%- include('./partials/header') %>
     <!-- product view -->
     <div class="container pt-4 pb-6 grid lg:grid-cols-2 gap-6">
         <!-- product image -->
@@ -122,7 +123,7 @@
                     <button id="enquiry-btn-single"
                             type="button"
                             class="flex-1 border border-gray-300 text-gray-600 px-8 py-3 font-medium rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-colors flex items-center justify-center gap-2"
-                            data-value="<%= product._id %>">
+                            data-value="<%= product._id %>" data-product="<%= product %>">
                         <i class="far fa-envelope"></i>
                         Enquiry
                     </button>

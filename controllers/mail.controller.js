@@ -22,21 +22,24 @@ const singleProductMail = async (req, res) => {
     const user = req.user;
     const phoneNumber = req.query.query || "N/A";
     const variant = req.query.variant || "N/A";
-    console.log("QUERY:", req.query);
+    // console.log("QUERY:", req.query);
     
 
     // Validate inputs
     if (!productid) {
+      req.flash('error', 'Product ID is required');
       return res.status(400).json({ message: "Product ID is required" });
     }
     
     if (!user) {
+      req.flash('error', 'User authentication required');
       return res.status(401).json({ message: "User authentication required" });
     }
 
     // Fetch product details
     const product = await Product.findById(productid);
     if (!product) {
+      req.flash('error', 'Product not found');
       return res.status(404).json({ message: "Product not found" });
     }
 
@@ -44,6 +47,7 @@ const singleProductMail = async (req, res) => {
     const variantDetails = product.variants.find(v => v.size === variant) || product.variants[0];
     
     if (!variantDetails) {
+      req.flash('error', 'Variant not found');
       return res.status(404).json({ message: "Variant not found" });
     }
     const effectivePrice = variantDetails.discount || variantDetails.price;
@@ -70,6 +74,7 @@ const singleProductMail = async (req, res) => {
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
               <td style="padding: 8px; border: 1px solid #e0e0e0; background-color: #f9f9f9;"><strong>Name:</strong></td>
+              
               <td style="padding: 8px; border: 1px solid #e0e0e0;">${user.name}</td>
             </tr>
             <tr>
@@ -133,24 +138,15 @@ const singleProductMail = async (req, res) => {
     }
 
     dbgr("✅ Single Product Enquiry Sent!");
-    
-    // Set success message in session
-    req.session.enquirySuccess = "Your enquiry has been sent successfully!";
-    
-    // Redirect back to product page
+    req.flash('success', 'Your enquiry has been sent successfully!');
     res.redirect(`/products/product/${productid}`);
   } catch (err) {
     dbgr("❌ Error in Single Product Enquiry:", err);
-    
-    // Set error message in session
-    req.session.enquiryError = "Failed to send enquiry. Please try again.";
-    
-    // Redirect with error
+    req.flash('error', 'Failed to send enquiry. Please try again.');
     res.status(500).redirect(`/products/product/${req.params.productid || ''}`);
   }
 };
 
-/**
 /**
  * Multiple Products Enquiry Mail
  * Sends an email with details about multiple products in the cart
@@ -164,11 +160,12 @@ const multipleProductMail = async (req, res) => {
 
     // Validate user & cart
     if (!user) {
+      req.flash('error', 'User authentication required');
       return res.status(401).json({ message: "User authentication required" });
     }
     
     if (!user?.cart?.length) {
-      req.session.cartError = "Your cart is empty. Add products before sending an enquiry.";
+      req.flash('error', 'Your cart is empty. Add products before sending an enquiry.');
       return res.redirect("/products/cart");
     }
 
@@ -202,7 +199,7 @@ const multipleProductMail = async (req, res) => {
     const validProducts = products.filter(p => p !== null);
     
     if (validProducts.length === 0) {
-      req.session.cartError = "No valid products found in your cart.";
+      req.flash('error', 'No valid products found in your cart.');
       return res.redirect("/products/cart");
     }
 
@@ -289,11 +286,11 @@ const multipleProductMail = async (req, res) => {
     }
 
     dbgr("✅ Multiple Product Enquiry Sent!");
-    req.session.enquirySuccess = "Your enquiry has been sent successfully!";
+    req.flash('success', 'Your enquiry has been sent successfully!');
     res.redirect("/products/cart");
   } catch (err) {
     dbgr("❌ Error in Multiple Product Enquiry:", err);
-    req.session.enquiryError = "Failed to send enquiry. Please try again.";
+    req.flash('error', 'Failed to send enquiry. Please try again.');
     res.status(500).redirect("/products/cart");
   }
 };

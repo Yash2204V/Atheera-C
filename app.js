@@ -15,6 +15,7 @@ const dbgr = require("debug")("development: app");
 const MongoStore = require("connect-mongo");
 const helmet = require("helmet");
 const compression = require("compression");
+const flash = require("connect-flash");
 
 // Import Configuration & Environment Variables
 const connectionDB = require("./config/db");
@@ -59,13 +60,12 @@ if (NODE_ENV === 'production') {
       frameguard: { action: 'sameorigin' }
   }));
 } else {
-  // In development, disable CSP for easy debugging
   app.use(helmet({
       contentSecurityPolicy: false
   }));
 }
 
-// Compression Middleware with optimized settings
+// Compression Middleware
 app.use(compression());
 
 // Request Parsing Middleware
@@ -73,7 +73,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Session Configuration with optimized settings
+// Session Configuration
 app.use(session({
   secret: EXPRESS_SESSION_SECRET,
   resave: false,
@@ -94,8 +94,10 @@ app.use(session({
   }
 }));
 
+// Initialize Flash Messages - MUST be after session middleware
+app.use(flash());
 
-// Static Files & View Engine with caching
+// Static Files & View Engine
 const staticOptions = {
   maxAge: NODE_ENV === 'production' ? '30d' : 0,
   etag: true,
@@ -109,12 +111,19 @@ app.set("views", path.join(__dirname, "views"));
 // Request Logging in Development
 if (NODE_ENV !== 'production') {
   const morgan = require('morgan');
-  app.use(morgan('tiny')); // Less verbose logging
+  app.use(morgan('tiny'));
 }
 
 // Authentication Middleware
 const loggedIn = require("./middlewares/check-user-logged-in");
 app.use(loggedIn);
+
+// Flash Messages Middleware - Make flash messages available to all views
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
 
 // Define Routes
 const userRoute = require("./routes/user.routes");
@@ -122,7 +131,7 @@ const productsRoute = require("./routes/products.routes");
 const adminRoute = require("./routes/admin.routes");
 const accountRoute = require("./routes/account.routes");
 
-// Home Route with caching
+// Home Route
 app.get("/", (req, res) => {
   res.render("index");
 });
