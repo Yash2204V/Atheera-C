@@ -7,7 +7,6 @@ const filterSidebar = document.getElementById('filter-sidebar');
 const filterOverlay = document.getElementById('filter-overlay');
 const closeFilter = document.getElementById('close-filter');
 
-
 if (enquiryBtnSing) {
     enquiryBtnSing.addEventListener("click", () => {
         const id = enquiryBtnSing.getAttribute("data-value");
@@ -32,7 +31,7 @@ if (enquiryBtnSing) {
         if (!variant) return;
 
         // Validate size
-        if (!uniqueSizes.includes(variant.toUpperCase())) {
+        if (!uniqueSizes.includes(variant.charAt(0).toUpperCase() + p.slice(1))) {
             return alert(`Invalid size! Available sizes: ${availableSizesStr}`);
         }
 
