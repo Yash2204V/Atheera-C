@@ -19,12 +19,12 @@ const flash = require("connect-flash");
 
 // Import Configuration & Environment Variables
 const connectionDB = require("./config/db");
-const { 
-  NODE_ENV, 
-  EXPRESS_SESSION_SECRET, 
-  BASE_URL, 
+const {
+  NODE_ENV,
+  EXPRESS_SESSION_SECRET,
+  BASE_URL,
   PORT,
-  MONGO_URI 
+  MONGO_URI
 } = require("./config/environment");
 
 // Connect to Database
@@ -33,35 +33,40 @@ connectionDB();
 // Initialize Express App
 const app = express();
 
+// After initializing Express app
+if (NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // Trust first proxy
+}
+
 // Security Headers Middleware
 if (NODE_ENV === 'production') {
   app.use(helmet({
-      contentSecurityPolicy: {
-          directives: {
-              defaultSrc: ["'self'"],
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
 
-              // ✅ Allow external scripts (No inline scripts)
-              scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"], 
+        // ✅ Allow external scripts (No inline scripts)
+        scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
 
-              // ✅ Allow Tailwind & external styles (inline styles needed for Tailwind)
-              styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
+        // ✅ Allow Tailwind & external styles (inline styles needed for Tailwind)
+        styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
 
-              // ✅ Allow images from self, data URIs, and external icon sources
-              imgSrc: ["'self'", "data:", "https://img.icons8.com"],
+        // ✅ Allow images from self, data URIs, and external icon sources
+        imgSrc: ["'self'", "data:", "https://img.icons8.com"],
 
-              // ✅ Allow fonts from Google Fonts and CDNs
-              fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
+        // ✅ Allow fonts from Google Fonts and CDNs
+        fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
 
-              // ✅ Other security settings
-              objectSrc: ["'none'"], // Prevents loading objects like Flash, etc.
-              upgradeInsecureRequests: [],
-          }
-      },
-      frameguard: { action: 'sameorigin' }
+        // ✅ Other security settings
+        objectSrc: ["'none'"], // Prevents loading objects like Flash, etc.
+        upgradeInsecureRequests: [],
+      }
+    },
+    frameguard: { action: 'sameorigin' }
   }));
 } else {
   app.use(helmet({
-      contentSecurityPolicy: false
+    contentSecurityPolicy: false
   }));
 }
 
@@ -81,6 +86,12 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
     ttl: 24 * 60 * 60,
+    mongoOptions: NODE_ENV === 'production' ? {
+      ssl: true,
+      sslValidate: true
+    } : {},
+    unset: 'destroy', // Add this to clean up stale sessions
+    proxy: NODE_ENV === 'production', // Important for secure cookies behind proxy
     autoRemove: 'native',
     touchAfter: 24 * 3600,
     collectionName: 'sessions',
@@ -120,11 +131,10 @@ app.use(loggedIn);
 
 // Flash Messages Middleware - Make flash messages available to all views
 app.use((req, res, next) => {
-  res.locals.success = req.flash('success');
-  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success').filter(msg => msg);
+  res.locals.error = req.flash('error').filter(msg => msg);
   next();
 });
-
 // Define Routes
 const userRoute = require("./routes/user.routes");
 const productsRoute = require("./routes/products.routes");
@@ -157,7 +167,7 @@ app.use(errorHandler);
 // Start Server
 const server = app.listen(PORT, () => {
   dbgr(`✅ Server running on ${BASE_URL}`);
-  
+
   if (NODE_ENV === 'production') {
     console.log(`Server running in production mode`);
   } else {

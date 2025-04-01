@@ -11,7 +11,9 @@ if (enquiryBtnSing) {
     enquiryBtnSing.addEventListener("click", () => {
         const id = enquiryBtnSing.getAttribute("data-value");
         const products = enquiryBtnSing.getAttribute("data-product");
-
+        console.log(products);
+        
+        
         // Extract available sizes
         const sizeRegex = /size:\s*'([^']*)'/g;
         const sizes = [];
@@ -21,6 +23,7 @@ if (enquiryBtnSing) {
         }
         const uniqueSizes = [...new Set(sizes)];
         const availableSizesStr = uniqueSizes.join(', ');
+        console.log(availableSizesStr);
 
         // Get user input
         const userInput = prompt('Please enter your phone number & proceed: (eg. +91-9876543210)');
@@ -31,7 +34,7 @@ if (enquiryBtnSing) {
         if (!variant) return;
 
         // Validate size
-        if (!uniqueSizes.includes(variant.charAt(0).toUpperCase() + p.slice(1))) {
+        if (!uniqueSizes.includes(variant.charAt(0).toUpperCase() + variant.slice(1))) {
             return alert(`Invalid size! Available sizes: ${availableSizesStr}`);
         }
 
