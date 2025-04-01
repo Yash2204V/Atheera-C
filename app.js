@@ -86,10 +86,6 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
     ttl: 24 * 60 * 60,
-    mongoOptions: NODE_ENV === 'production' ? {
-      ssl: true,
-      sslValidate: true
-    } : {},
     unset: 'destroy', // Add this to clean up stale sessions
     proxy: NODE_ENV === 'production', // Important for secure cookies behind proxy
     autoRemove: 'native',
