@@ -29,10 +29,11 @@ if (enquiryBtnSing) {
         // Get size with validation
         const variant = prompt(`Enter Available Size (${availableSizesStr}):`)?.trim();
         if (!variant) return;
-
+        // console.log(variant.charAt(0).toUpperCase() + variant.slice(1));
+        const currSize = variant.charAt(0).toUpperCase() + variant.slice(1);
         // Validate size
-        if (!uniqueSizes.includes(variant.charAt(0).toUpperCase() + variant.slice(1))) {
-            return alert(`Invalid size! Available sizes: ${availableSizesStr}`);
+        if (!uniqueSizes.includes(currSize)) {
+            return alert(`Invalid size! ${currSize} Available sizes: ${availableSizesStr}`);
         }
 
         // Final confirmation
