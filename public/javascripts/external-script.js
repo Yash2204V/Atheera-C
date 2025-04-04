@@ -33,7 +33,7 @@ if (enquiryBtnSing) {
         const currSize = variant.charAt(0).toUpperCase() + variant.slice(1);
         // Validate size
         if (!uniqueSizes.includes(currSize)) {
-            return alert(`Invalid size! ${currSize} Available sizes: ${availableSizesStr}`);
+            return alert(`Invalid size! ${currSize}; Available sizes: ${availableSizesStr}`);
         }
 
         // Final confirmation
