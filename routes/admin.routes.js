@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../config/multer.config.js");
 
 // 🛡️ Middleware imports
 const adminAuthMiddleware = require("../middlewares/admin-auth-middleware");
@@ -15,10 +16,6 @@ const {
     makeAdmin
 } = require("../controllers/admin.controller");
 
-// 📸 Multer for file uploads
-const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 /*  
 =========================

@@ -43,7 +43,7 @@ if (NODE_ENV === 'production') {
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", "https://res.cloudinary.com"],
 
         // ✅ Allow external scripts (No inline scripts)
         scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
@@ -51,8 +51,10 @@ if (NODE_ENV === 'production') {
         // ✅ Allow Tailwind & external styles (inline styles needed for Tailwind)
         styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
 
-        // ✅ Allow images from self, data URIs, and external icon sources
-        imgSrc: ["'self'", "data:", "https://img.icons8.com"],
+        // ✅ Allow images from self, data URIs, and external sources
+        imgSrc: ["'self'", "data:", "https://img.icons8.com", "https://res.cloudinary.com"],
+
+        mediaSrc: ["'self'", "https://res.cloudinary.com"],
 
         // ✅ Allow fonts from Google Fonts and CDNs
         fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],

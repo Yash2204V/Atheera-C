@@ -23,7 +23,6 @@ const singleProductMail = async (req, res) => {
     const phoneNumber = req.query.query || "N/A";
     const variant = req.query.variant || "N/A";
     // console.log("QUERY:", req.query);
-    
 
     // Validate inputs
     if (!productid) {

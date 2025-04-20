@@ -13,10 +13,7 @@ const productSchema = new mongoose.Schema({
     // Basic product information
     // Product images
     images: {
-        type: [{
-            imageBuffer: Buffer,
-            contentType: String
-        }],
+        type: [String],
         validate: {
             validator: function (val) {
                 if (!val || val.length === 0) {

@@ -1,6 +1,7 @@
 const { PASSCODE } = require("../config/environment");
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
+const { uploadMultipleOnCloudinary } = require("../utils/cloudinary.js");
 
 const searchAdminMod = async (req, res) => {
     const searchQuery = req.query.query || '';
@@ -36,14 +37,16 @@ const searchAdminMod = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const imageDocs = req.files.map(file => ({
-            imageBuffer: file.buffer,
-            contentType: file.mimetype,
-        }));
-    
+        const imagesPath = req.files.map(file => file.path);
+        const images = await uploadMultipleOnCloudinary(imagesPath);
+
+        if(!images) {
+            throw new Error("Images Upload failed on Cloudinary.")
+        }
+        
         const productData = {
             ...req.body,
-            images: imageDocs,
+            images: images,
             quality: req.body.quality || "",
             fabricDetails: req.body.fabricDetails || "Not specified"
         };
@@ -83,21 +86,21 @@ const updatePageP = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { title, category, subCategory, subSubCategory, description, fabricDetails, quality, variants } = req.body;
-        
+
         await Product.findOneAndUpdate(
-            { _id: req.params.productid }, 
-            { 
-                title, 
-                category, 
-                subCategory, 
-                subSubCategory, 
+            { _id: req.params.productid },
+            {
+                title,
+                category,
+                subCategory,
+                subSubCategory,
                 description,
                 fabricDetails,
                 quality,
-                variants 
+                variants
             }
         );
-        
+
         res.redirect("/admin");
     } catch (e) {
         res.status(400).json({
