@@ -7,7 +7,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-
 const uploadMultipleOnCloudinary = async (filesPath) => {
     try {
         if (!filesPath) return null;
@@ -17,16 +16,23 @@ const uploadMultipleOnCloudinary = async (filesPath) => {
         for (const filePath of filesPath) {
 
             const response = await cloudinary.uploader.upload(filePath, {
-                resource_type: "auto"
+                resource_type: "auto",
+                folder: "clothing"
             })
 
             if (!response) {
                 throw new Error("File Uploading Failed");
             }
 
-            uploadedFiles.push(response.url);
+            uploadedFiles.push({
+                url: response.url,
+                public_id: response.public_id
+            });
+
             fs.unlinkSync(filePath);
         }
+        console.log(uploadedFiles);
+
         return uploadedFiles;
 
     } catch (error) {
@@ -35,6 +41,28 @@ const uploadMultipleOnCloudinary = async (filesPath) => {
     }
 };
 
+const deleteMultipleOnCloudinary = async (filesPublicId) => {
+
+    try {
+
+        if (!filesPublicId) {
+            throw new Error("Files path not found");
+        }        
+        
+        for (const publicId of filesPublicId) {
+            await cloudinary.uploader.destroy(publicId);
+        }
+
+        return 1;
+
+    } catch (error) {
+        console.error("Error while deleting the files from cloudinary", error)
+        return null;
+    }
+
+}
+
 module.exports = {
-    uploadMultipleOnCloudinary
+    uploadMultipleOnCloudinary,
+    deleteMultipleOnCloudinary
 }

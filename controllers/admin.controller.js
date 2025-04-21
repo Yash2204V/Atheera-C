@@ -1,7 +1,7 @@
 const { PASSCODE } = require("../config/environment");
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
-const { uploadMultipleOnCloudinary } = require("../utils/cloudinary.js");
+const { uploadMultipleOnCloudinary, deleteMultipleOnCloudinary } = require("../utils/cloudinary.js");
 
 const searchAdminMod = async (req, res) => {
     const searchQuery = req.query.query || '';
@@ -40,10 +40,10 @@ const createProduct = async (req, res) => {
         const imagesPath = req.files.map(file => file.path);
         const images = await uploadMultipleOnCloudinary(imagesPath);
 
-        if(!images) {
+        if (!images) {
             throw new Error("Images Upload failed on Cloudinary.")
         }
-        
+
         const productData = {
             ...req.body,
             images: images,
@@ -62,12 +62,24 @@ const createProduct = async (req, res) => {
 }
 
 const deleteProduct = async (req, res) => {
+
     try {
-        await Product.findOneAndDelete({ _id: req.params.productid });
+        
+        const product = await Product.findOne({ _id: req.params.productid });
+        const images = product.images.map(image => image.public_id);
+
+        const areImageDeleted = await deleteMultipleOnCloudinary(images);
+
+        if (!areImageDeleted) {
+            throw new Error("Deleting Failed")
+        }
+
+        await Product.findByIdAndDelete({ _id: req.params.productid });
         res.redirect("/admin");
-    } catch (e) {
+
+    } catch (error) {
         res.status(400).json({
-            err: e.message
+            error: error.message
         });
     }
 }

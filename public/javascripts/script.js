@@ -43,12 +43,23 @@ if(filter){
     })
 }
 
-function toggleElement(id) {
-    const element = document.getElementById(id);
-    const icon = document.querySelector(`[data-target="${id}"] i`);
-    if (element && icon) {
-        element.classList.toggle('hidden');
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-bars');
-    }
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleButtons = document.querySelectorAll("[data-toggle-id]");
+
+    toggleButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetId = button.getAttribute("data-toggle-id");
+            const element = document.getElementById(targetId);
+            const icon = button.querySelector("i");
+
+            if (element) {
+                element.classList.toggle("hidden");
+            }
+
+            if (icon) {
+                icon.classList.toggle("fa-bars");
+                icon.classList.toggle("fa-bars"); // adjust if needed
+            }
+        });
+    });
+});

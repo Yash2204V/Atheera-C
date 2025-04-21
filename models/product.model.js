@@ -9,11 +9,23 @@ const mongoose = require("mongoose");
  * Product Schema
  * Defines the structure and validation for product data
  */
+
+const imageSchema = new mongoose.Schema({
+        url: {
+            type: String,
+            required: true
+        },
+        public_id: {
+            type: String,
+            required: true
+        }
+});
+
 const productSchema = new mongoose.Schema({
     // Basic product information
     // Product images
     images: {
-        type: [String],
+        type: [imageSchema],
         validate: {
             validator: function (val) {
                 if (!val || val.length === 0) {
@@ -98,7 +110,7 @@ const productSchema = new mongoose.Schema({
             default: 0,
             min: [0, 'Discount cannot be negative'],
             validate: {
-                validator: function(value) {
+                validator: function (value) {
                     return value <= this.price;
                 },
                 message: 'Discount price cannot be greater than regular price'
