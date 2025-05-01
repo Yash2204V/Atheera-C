@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
             ...req.body,
             images: images,
             quality: req.body.quality || "",
-            fabricDetails: req.body.fabricDetails || "Not specified"
+            generalDetails: req.body.generalDetails || "Not specified"
         };
 
         await Product.create(productData);
@@ -97,7 +97,7 @@ const updatePageP = async (req, res) => {
 
 const editProduct = async (req, res) => {
     try {
-        const { title, category, subCategory, subSubCategory, description, fabricDetails, quality, variants } = req.body;
+        const { title, category, subCategory, subSubCategory, description, generalDetails, quality, variants } = req.body;
 
         await Product.findOneAndUpdate(
             { _id: req.params.productid },
@@ -107,7 +107,7 @@ const editProduct = async (req, res) => {
                 subCategory,
                 subSubCategory,
                 description,
-                fabricDetails,
+                generalDetails,
                 quality,
                 variants
             }

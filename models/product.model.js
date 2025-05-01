@@ -54,18 +54,18 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Description is required'],
         maxlength: [2000, 'Description cannot exceed 2000 characters']
     },
-    fabricDetails: {
+    generalDetails: {
         type: String,
         default: "",
         trim: true,
-        required: [true, 'Fabric Details is required'],
-        maxlength: [2000, 'Fabric Details cannot exceed 2000 characters']
+        required: [true, 'General Details is required'],
+        maxlength: [2000, 'General Details cannot exceed 2000 characters']
     },
     // Categorization
     category: {
         type: String,
         enum: {
-            values: ["clothing"],
+            values: ["clothing", "artificialJewellery"],
             message: '{VALUE} is not a supported category'
         },
         required: [true, 'Category is required'],
@@ -182,6 +182,7 @@ productSchema.virtual('totalStock').get(function () {
 productSchema.pre("validate", function (next) {
     const validSubCategories = {
         clothing: ["suit", "saree", "kurti", "bottomwear", "others"],
+        artificialJewellery: ["necklace", "ring", "bracelet"]
     };
 
     const validSubSubCategories = {
@@ -189,7 +190,10 @@ productSchema.pre("validate", function (next) {
         saree: ["ethnic", "partywear", "regular"],
         kurti: ["ethnic", "short", "regular"],
         bottomwear: ["casual", "ethnic", "regular", "printed"],
-        others: ["cordset", "nightwear", "sports"]
+        others: ["cordset", "nightwear", "sports"],
+        necklace: ["traditional", "modern", "beaded"],
+        ring: ["statement", "bands", "cocktail"],
+        bracelet: ["bangles", "cuffs", "chains"]
     };
 
     // Validate subCategory

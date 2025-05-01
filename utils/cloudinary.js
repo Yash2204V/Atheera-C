@@ -17,7 +17,7 @@ const uploadMultipleOnCloudinary = async (filesPath) => {
 
             const response = await cloudinary.uploader.upload(filePath, {
                 resource_type: "auto",
-                folder: "clothing"
+                folder: "clothing_artificialJewellery"
             })
 
             if (!response) {
@@ -31,7 +31,6 @@ const uploadMultipleOnCloudinary = async (filesPath) => {
 
             fs.unlinkSync(filePath);
         }
-        console.log(uploadedFiles);
 
         return uploadedFiles;
 
@@ -48,7 +47,7 @@ const deleteMultipleOnCloudinary = async (filesPublicId) => {
         if (!filesPublicId) {
             throw new Error("Files path not found");
         }        
-        
+
         for (const publicId of filesPublicId) {
             await cloudinary.uploader.destroy(publicId);
         }

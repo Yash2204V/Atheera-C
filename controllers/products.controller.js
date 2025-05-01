@@ -36,14 +36,15 @@ const shop = async (req, res) => {
         // Build search criteria
         const searchCriteria = {};
 
+        // Add category filter
+        if (category) {
+            searchCriteria.category = category;
+        }
+
         // If we have both subCategory and subSubCategory, use them together
         if (subCategory && subSubCategory) {
             searchCriteria.subCategory = subCategory;
             searchCriteria.subSubCategory = subSubCategory;
-        }
-        // If we only have category, use it
-        else if (category) {
-            searchCriteria.category = category;
         }
         // If we have a general search query
         else if (query) {
@@ -101,7 +102,10 @@ const shop = async (req, res) => {
             searchQuery: '',
             totalProducts: 0,
             sortBy: 'createdAt',
-            sortOrder: 'desc'
+            sortOrder: 'desc',
+            category: '',
+            subCategory: '',
+            subSubCategory: ''
         });
     }
 };

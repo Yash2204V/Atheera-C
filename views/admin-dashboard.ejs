@@ -62,11 +62,11 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Fabric Details</label>
-                        <textarea name="fabricDetails" rows="4" required
+                        <label class="block text-sm font-medium text-gray-700 mb-1">General Details</label>
+                        <textarea name="generalDetails" rows="4" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 
                                    focus:border-transparent resize-none leading-relaxed"
-                            placeholder="Specify fabric type, texture, and any special details..."></textarea>
+                            placeholder="Specify general type, texture, and any special details..."></textarea>
                     </div>                    
 
                     <div>
@@ -82,6 +82,7 @@
                                 class="w-full text-xs px-2 py-2 font-poppins border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Select Category</option>
                                 <option value="clothing">Clothing</option>
+                                <option value="artificialJewellery">Artificial Jewellery</option>
                             </select>
                         </div>
 
@@ -90,11 +91,15 @@
                             <select name="subCategory" required
                                 class="w-full text-xs px-2 py-2 font-poppins border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Select Sub Category</option>
+                                <option class="font-extrabold" value=""><b>Clothing</b></option>
                                 <option value="suit">Suit</option>
                                 <option value="saree">Saree</option>
                                 <option value="kurti">Kurti</option>
                                 <option value="bottomwear">Bottom Wear</option>
-                                <option value="others">Others</option>
+                                <option class="font-extrabold" value=""><b>Artificial Jewellery</b></option>
+                                <option value="necklace">Necklace</option>
+                                <option value="ring">Ring</option>
+                                <option value="bracelet">Bracelet</option>
                             </select>
                         </div>
 
@@ -125,6 +130,19 @@
                                 <option value="cordset">CordSet</option>
                                 <option value="nightwear">NightWear</option>
                                 <option value="sports">Sports</option>
+                                <option class="font-extrabold" value=""><b>Necklace</b></option>
+                                <option value="traditional">Traditional</option>
+                                <option value="modern">Modern</option>
+                                <option value="beaded">Beaded</option>
+                                <option class="font-extrabold" value=""><b>Ring</b></option>
+                                <option value="statement">Statement</option>
+                                <option value="bands">Bands</option>
+                                <option value="cocktail">Cocktail</option>
+                                <option class="font-extrabold" value=""><b>Bracelet</b></option>
+                                <option value="bangles">Bangles</option>
+                                <option value="cuffs">Cuffs</option>
+                                <option value="chains">Chains</option>
+
                             </select>
                         </div>
                     </div>

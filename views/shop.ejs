@@ -26,10 +26,13 @@
                                 <div class="mb-8">
                                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Categories</h3>
                                     <div class="space-y-2">
+                                        
                                         <% for (const keyA in Category) { %>
                                             <div class="border-b border-gray-100 pb-4">
                                                 <div id="<%= keyA %>-container">
                                                     <% const subObj=Category[keyA]; %>
+                                                     
+                                                    <% if(keyA === category || category === '') { %>
                                                         <button
                                                             class="w-full flex items-center justify-between text-gray-700 hover:text-primary transition-colors"
                                                             data-target="<%= keyA %>-subcategories"
@@ -68,6 +71,9 @@
                                                                                             name="sortBy"
                                                                                             value="<%=sortBy%>">
                                                                                         <input type="hidden"
+                                                                                            name="category"
+                                                                                            value="<%= category %>">
+                                                                                        <input type="hidden"
                                                                                             name="sortOrder"
                                                                                             value="<%=sortOrder%>">
                                                                                         <input type="hidden"
@@ -91,6 +97,8 @@
                                                                 </div>
                                                                 <% } %>
                                                         </div>
+
+                                                    <% } %>
                                                 </div>
                                             </div>
                                             <% } %>
