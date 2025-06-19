@@ -165,7 +165,6 @@ function Header() {
               <div className="py-3 rounded-full hover:bg-gray-50 transition-all duration-300">
                <i className="fas fa-heart text-gray-800"></i>
               </div>
-              <span className="hidden md:inline ml-2 font-medium">Wishlist</span>
             </Link>
 
             {/* Cart with animated badge */}
@@ -173,7 +172,6 @@ function Header() {
               <div className="py-3 rounded-full hover:bg-gray-50 transition-all duration-300">
                 <i className="fas fa-shopping-bag text-xl text-gray-700"></i>
               </div>
-              <span className="hidden md:inline ml-2 font-medium">Cart</span>
             </Link>
       
             {/* User Auth */}
