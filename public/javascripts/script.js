@@ -27,6 +27,7 @@ if(categoryBar && closeCategory){
     })
 }
 
+
 // let the user when click to filter: the relative div appear, and when the user either click to filter or closeIcon: the relative div will disappear.
 if(filter){
     let divOpen = false;
@@ -43,23 +44,27 @@ if(filter){
     })
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const toggleButtons = document.querySelectorAll("[data-toggle-id]");
+function toggleElement(id) {
+    const element = document.getElementById(id);
+    const icon = document.querySelector(`[data-target="${id}"] i`);
+    if (element && icon) {
+        element.classList.toggle('hidden');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-bars');
+    }
+}
 
-    toggleButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const targetId = button.getAttribute("data-toggle-id");
-            const element = document.getElementById(targetId);
-            const icon = button.querySelector("i");
+// Enquiry
 
-            if (element) {
-                element.classList.toggle("hidden");
-            }
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollPosition = localStorage.getItem("scrollPosition");
+    if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition, 10));
+    }
+    const saveScrollPosition = () => {
+        localStorage.setItem("scrollPosition", window.scrollY);
+    };
 
-            if (icon) {
-                icon.classList.toggle("fa-bars");
-                icon.classList.toggle("fa-bars"); // adjust if needed
-            }
-        });
-    });
+    window.addEventListener("beforeunload", saveScrollPosition);
+    return () => window.removeEventListener("beforeunload", saveScrollPosition);
 });
