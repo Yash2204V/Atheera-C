@@ -124,6 +124,8 @@ function Header() {
               src="/images/icons/favicon.png" 
               alt="Atheera Logo"
               className="h-10 md:h-14 w-auto transition-transform group-hover:scale-105 rounded-lg"
+              style={{ width: "66px" }}
+
             />
             {/* <span className="text-2xl font-bold text-primary font-sans tracking-wide">Atheera</span> */}
           </Link>
