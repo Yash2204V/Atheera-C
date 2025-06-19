@@ -106,7 +106,8 @@ const userSchema = new mongoose.Schema({
     orderNumber: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
+      sparse: true
     },
     products: [{
       product: {
