@@ -84,17 +84,18 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
-    ttl: 24 * 60 * 60, // Session expiration time in seconds (24 hours)
-    autoRemove: 'native', // Use MongoDB's TTL index
-    touchAfter: 24 * 3600 // Only update session once per day unless data changes
+    ttl: 24 * 60 * 60, // 24 hours
+    autoRemove: 'native',
+    touchAfter: 24 * 3600
   }),
   cookie: {
     httpOnly: true,
-    secure: NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'lax'
+    secure: NODE_ENV === 'production',                      // ❗ only true in production
+    sameSite: NODE_ENV === 'production' ? 'none' : 'lax',   // ❗ 'none' for cross-origin in prod
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
+
 
 // Static Files
 app.use(express.static(path.join(__dirname, "public")));
