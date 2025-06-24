@@ -78,6 +78,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Session Configuration
+if (NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 app.use(session({
   secret: EXPRESS_SESSION_SECRET,
   resave: false,
@@ -90,8 +93,8 @@ app.use(session({
   }),
   cookie: {
     httpOnly: true,
-    secure: NODE_ENV === 'production',                      // ❗ only true in production
-    sameSite: NODE_ENV === 'production' ? 'none' : 'lax',   // ❗ 'none' for cross-origin in prod
+    secure: NODE_ENV === 'production',
+    sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));

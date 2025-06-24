@@ -8,6 +8,8 @@ const { OAuth2Client } = require("google-auth-library");
 const dbgr = require("debug")("development: user-controller");
 const bcrypt = require("bcryptjs");
 const path = require("path");
+const session = require('express-session');
+const MongoStore = require('connect-mongo'); // or another store
 
 // Import config & models
 const {
